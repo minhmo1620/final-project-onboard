@@ -6,6 +6,7 @@ from flask_restful import Resource, Api
 from flask_jwt import JWT
 
 from security import authenticate, identity
+from db import db
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
@@ -16,4 +17,3 @@ api = Api(app)
 
 jwt = JWT(app, authenticate, identity)
 
-db = SQLAlchemy(app)
