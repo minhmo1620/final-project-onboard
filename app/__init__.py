@@ -1,9 +1,11 @@
 import os
+# import yaml
 
 from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt import JWT
-
+from flask_mysqldb import MySQL
+import mysql.connector
 from .securtity import authenticate, identity
 
 from .db import db
@@ -19,8 +21,7 @@ from .controller.auth import auth
 def create_app():
 
     app = Flask(__name__)
-    # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
-    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///data.db"
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
