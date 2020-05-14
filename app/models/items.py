@@ -1,4 +1,4 @@
-from db import db
+from ..db import db
 
 class ItemModel(db.Model):
 	__tablename__ = "items"
@@ -29,3 +29,4 @@ class ItemModel(db.Model):
 	def delete_from_db(self):
 		db.session.delete(self)
 		db.session.commit()
+

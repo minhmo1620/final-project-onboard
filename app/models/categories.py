@@ -1,4 +1,5 @@
-from db import db
+from ..db import db
+
 
 class CategoryModel(db.Model):
 	__tablename__ = 'categories'
@@ -18,7 +19,7 @@ class CategoryModel(db.Model):
 
 	@classmethod
 	def find_by_name(cls, name):
-		return cls.query.filter_by(category=name).first() #SELECT * FROM items WHERE name=name LIMIT=1
+		return cls.query.filter_by(category=name).first()
 
 	def save_to_db(self):
 		db.session.add(self)
