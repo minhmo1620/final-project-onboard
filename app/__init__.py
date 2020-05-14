@@ -13,10 +13,6 @@ from .models.users import UserModel
 from .models.items import ItemModel
 from .models.categories import CategoryModel
 
-from .controller.items import items
-from .controller.categories import categories
-from .controller.auth import auth
-
 
 def create_app():
 
@@ -28,6 +24,10 @@ def create_app():
     db.init_app(app)
 
     with app.app_context():
+        from .controller.items import items
+        from .controller.categories import categories
+        from .controller.auth import auth
+
         app.register_blueprint(auth, url_prefix="")
         app.register_blueprint(categories, url_prefix="/categories")
         app.register_blueprint(items, url_prefix="/categories/<int:category_id>/items")
