@@ -1,4 +1,5 @@
 from ..db import db
+from app import ma
 
 
 class UserModel(db.Model):
@@ -23,3 +24,12 @@ class UserModel(db.Model):
 	@classmethod
 	def find_by_id(cls, _id):
 		return cls.query.filter_by(id=_id).first()
+
+
+class UserSchema(ma.Schema):
+	class Meta:
+		fields = ("id", "username")
+
+
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)

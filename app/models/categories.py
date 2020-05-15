@@ -1,4 +1,5 @@
 from ..db import db
+from app import ma
 
 
 class CategoryModel(db.Model):
@@ -24,3 +25,12 @@ class CategoryModel(db.Model):
 	def save_to_db(self):
 		db.session.add(self)
 		db.session.commit()
+
+
+class CategorySchema(ma.Schema):
+	class Meta:
+		fields = ("category", "creator_id")
+
+
+category_schema = CategoryModel()
+categories_schema = CategoryModel(many=True)

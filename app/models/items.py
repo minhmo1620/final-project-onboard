@@ -1,4 +1,6 @@
 from ..db import db
+from app import ma
+
 
 class ItemModel(db.Model):
 	__tablename__ = "items"
@@ -16,7 +18,7 @@ class ItemModel(db.Model):
 		self.category_id = category_id
 
 	def json(self):
-		return {'name':self.name, 'description':self.description}
+		return {'name': self.name, 'description': self.description}
 
 	@classmethod
 	def find_by_name(cls, name):
@@ -30,3 +32,11 @@ class ItemModel(db.Model):
 		db.session.delete(self)
 		db.session.commit()
 
+
+class ItemSchema(ma.Schema):
+	class Meta:
+		fields = ("name", "description")
+
+
+item_schema = ItemSchema()
+items_schema = ItemModel(many=True)
