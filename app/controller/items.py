@@ -12,7 +12,7 @@ def get_items(category_id):
 
 
 @items.route('/', methods=['POST'])
-def new_item(category_id, item_id):
+def new_item(category_id):
 	"""
 	input: name of new item and the category
 	output:
