@@ -1,5 +1,5 @@
 # Project specific files to ignore
-app/web.db
+app/data.db
 venv_unit/
 
 
