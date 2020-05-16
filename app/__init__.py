@@ -4,7 +4,7 @@ from flask_marshmallow import Marshmallow
 
 from flask import Flask, Blueprint
 from flask_jwt import JWT
-from .securtity import authenticate, identity
+from .helpers import authenticate, identity
 
 from .db import db
 from .models.users import UserModel
@@ -19,7 +19,7 @@ from .controller.auth import auth
 def create_app():
 
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mia@localhost/app'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
@@ -27,8 +27,8 @@ def create_app():
 
     with app.app_context():
         app.register_blueprint(auth, url_prefix="")
-        app.register_blueprint(categories, url_prefix="/categories")
-        app.register_blueprint(items, url_prefix="/categories/<int:category_id>/items")
+        app.register_blueprint(categories, url_prefix="")
+        app.register_blueprint(items, url_prefix="")
 
         db.create_all()
 
