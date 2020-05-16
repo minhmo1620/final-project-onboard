@@ -3,20 +3,21 @@ from flask import Blueprint
 categories = Blueprint('categories', __name__)
 
 
-@categories.route('/', methods=['GET'])
+@categories.route('/categories', methods=['GET'])
 def get_categories():
     """
-    return all categories of that user
+    input:
+    output: return all categories in the catalog
     """
     pass
 
 
-@categories.route('/', methods=['POST'])
-def new_category():
+@categories.route('/categories', methods=['POST'])
+def create_category():
     """
-    input: request new category
+    input: request new category (category name, description)
     output:
-        - add the category successfully (if not existed)
+        - add the category successfully (if not existed) --> 200
         - raise error for existed category
     """
     pass
