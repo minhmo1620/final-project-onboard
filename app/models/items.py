@@ -1,6 +1,6 @@
 from ..db import db
-from app import ma
-
+# from .. import ma
+from marshmallow import Schema
 
 class ItemModel(db.Model):
 	__tablename__ = "items"
@@ -8,9 +8,7 @@ class ItemModel(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(100))
 	description = db.Column(db.String(200))
-
 	category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
-	categories = db.relationship('CategoryModel')
 
 	def __init__(self, name, description, category_id):
 		self.name = name
@@ -33,10 +31,10 @@ class ItemModel(db.Model):
 		db.session.commit()
 
 
-class ItemSchema(ma.Schema):
+class ItemSchema(Schema):
 	class Meta:
 		fields = ("name", "description")
 
 
 item_schema = ItemSchema()
-items_schema = ItemModel(many=True)
+items_schema = ItemSchema(many=True)

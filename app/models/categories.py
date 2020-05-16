@@ -1,19 +1,19 @@
 from ..db import db
-from app import ma
-
+# from .. import ma
+from marshmallow import Schema
 
 class CategoryModel(db.Model):
 	__tablename__ = 'categories'
 
 	id = db.Column(db.Integer, primary_key=True)
-	category = db.Column(db.String(100))
-	creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+	name = db.Column(db.String(100))
+	description = db.Column(db.String(100))
 
-	users = db.relationship('UserModel')
+	items = db.relationship('ItemModel')
 
-	def __init__(self, category, creator_id):
-		self.category = category
-		self.creator_id = creator_id
+	def __init__(self, category, description):
+		self.name = category
+		self.description = description
 
 	def json(self):
 		return {'category': self.category}
@@ -27,10 +27,10 @@ class CategoryModel(db.Model):
 		db.session.commit()
 
 
-class CategorySchema(ma.Schema):
+class CategorySchema(Schema):
 	class Meta:
-		fields = ("category", "creator_id")
+		fields = ("name", "description")
 
 
-category_schema = CategoryModel()
-categories_schema = CategoryModel(many=True)
+category_schema = CategorySchema()
+categories_schema = CategorySchema(many=True)

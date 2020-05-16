@@ -1,5 +1,5 @@
 from ..db import db
-from app import ma
+from marshmallow import Schema
 
 
 class UserModel(db.Model):
@@ -8,10 +8,14 @@ class UserModel(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(80))
 	password = db.Column(db.String(100))
+	salt = db.Column(db.String(100))
 
-	def __init__(self, username, password):
+	items = db.relationship('ItemModel')
+
+	def __init__(self, username, password, salt):
 		self.username = username
 		self.password = password
+		self.salt = salt
 
 	def save_to_db(self):
 		db.session.add(self)
@@ -26,7 +30,7 @@ class UserModel(db.Model):
 		return cls.query.filter_by(id=_id).first()
 
 
-class UserSchema(ma.Schema):
+class UserSchema(Schema):
 	class Meta:
 		fields = ("id", "username")
 
