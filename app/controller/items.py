@@ -7,8 +7,9 @@ items = Blueprint('items', __name__)
 @items.route('/categories/<int:category_id>/items', methods=['GET'])
 def get_items(category_id):
 	"""
-	input: category id
+	input: category id (int)
 	output: show all items in that category
+		- each item: name of item
 	"""
 
 
@@ -16,10 +17,13 @@ def get_items(category_id):
 @jwt_required()
 def create_item(category_id):
 	"""
-	input: category_id and new item (item name, item description)
+	input:
+		- category_id (int)
+		- new item information
+			- item name (str)
+			- item description (str)
 	output:
 		- add new item to the category successfully
-			- item_id, item_name, item_description, user_id
 		- raise error for existed item
 	"""
 	pass
@@ -28,8 +32,12 @@ def create_item(category_id):
 @items.route('/categories/<int:category_id>/items/<int:item_id>', methods=['GET'])
 def get_item(category_id, item_id):
 	"""
-	input: category_id, item_id
-	output: item id and description
+	input:
+		- category_id (int)
+		- item_id (int)
+	output:
+	- item id and description (if found)
+	- raise error if not
 	"""
 	pass
 

@@ -16,7 +16,9 @@ def create_salt():
 @users.route('/users', methods=['POST'])
 def create_user():
     """
-    input: username, password
+    input:
+        - username: string
+        - password: string
     output:
         - raise error if username is existed
         - if username is not existed
