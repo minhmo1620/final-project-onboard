@@ -11,20 +11,25 @@ from .models.users import UserModel
 from .models.items import ItemModel
 from .models.categories import CategoryModel
 
-from .controller.items import items
-from .controller.categories import categories
-
-
 def create_app():
 
     app = Flask(__name__)
-    app.config.from_envvar('APP_CONFIG_FILE')
+    # app.config.from_envvar('APP_CONFIG_FILE')
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mia@localhost/app'
+    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///data.db"
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
 
     with app.app_context():
-        app.register_blueprint(categories, url_prefix="")
-        app.register_blueprint(items, url_prefix="")
+        from .controller.items import items
+        from .controller.categories import categories
+        from .controller.users import users
+
+        app.register_blueprint(categories, url_prefix="/")
+        app.register_blueprint(items, url_prefix="/")
+        app.register_blueprint(users, url_prefix="/")
 
         db.create_all()
 
