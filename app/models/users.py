@@ -9,6 +9,7 @@ class UserModel(db.Model):
 	username = db.Column(db.String(80))
 	password = db.Column(db.String(100))
 	salt = db.Column(db.String(100))
+	# token = db.Column(db.String(100))
 
 	items = db.relationship('ItemModel')
 

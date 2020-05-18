@@ -1,4 +1,7 @@
-from flask import Blueprint
+from flask import Blueprint, request, jsonify
+from ..models.categories import CategoryModel
+from app import db
+
 
 categories = Blueprint('categories', __name__)
 
@@ -9,7 +12,11 @@ def get_categories():
     input:
     output: return all categories in the catalog
     """
-    pass
+    list_categories = db.session.query(CategoryModel)
+    res = []
+    for i in list_categories:
+        res.append(i.json())
+    return jsonify({"categories":res})
 
 
 @categories.route('/categories', methods=['POST'])
@@ -20,5 +27,15 @@ def create_category():
         - add the category successfully (if not existed) --> 200
         - raise error for existed category
     """
-    pass
+    data = request.get_json()
+    category_name = data['name']
+    category_description = data['description']
+
+    if CategoryModel.find_by_name(category_name):
+        return jsonify({'message': 'existed category'})
+
+    new_category = CategoryModel(category_name, category_description)
+    new_category.save_to_db()
+
+    return jsonify({'message': "ok good"})
 

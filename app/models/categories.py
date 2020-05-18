@@ -1,5 +1,4 @@
 from ..db import db
-# from .. import ma
 from marshmallow import Schema
 
 class CategoryModel(db.Model):
@@ -16,11 +15,11 @@ class CategoryModel(db.Model):
 		self.description = description
 
 	def json(self):
-		return {'category': self.category}
+		return {'category': self.name}
 
 	@classmethod
 	def find_by_name(cls, name):
-		return cls.query.filter_by(category=name).first()
+		return db.session.query(cls).filter_by(name=name).first()
 
 	def save_to_db(self):
 		db.session.add(self)

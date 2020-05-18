@@ -9,11 +9,13 @@ class ItemModel(db.Model):
 	name = db.Column(db.String(100))
 	description = db.Column(db.String(200))
 	category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
+	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 	def __init__(self, name, description, category_id):
 		self.name = name
 		self.description = description
 		self.category_id = category_id
+		#add attribute for user
 
 	def json(self):
 		return {'name': self.name, 'description': self.description}
