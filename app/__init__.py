@@ -13,20 +13,16 @@ from .models.categories import CategoryModel
 
 from .controller.items import items
 from .controller.categories import categories
-from .controller.auth import auth
 
 
 def create_app():
 
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mia@localhost/app'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+    app.config.from_envvar('APP_CONFIG_FILE')
 
     db.init_app(app)
 
     with app.app_context():
-        app.register_blueprint(auth, url_prefix="")
         app.register_blueprint(categories, url_prefix="")
         app.register_blueprint(items, url_prefix="")
 
