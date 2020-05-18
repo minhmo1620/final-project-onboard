@@ -11,6 +11,7 @@ from .models.users import UserModel
 from .models.items import ItemModel
 from .models.categories import CategoryModel
 
+
 def create_app():
 
     app = Flask(__name__)
@@ -19,6 +20,7 @@ def create_app():
     # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///data.db"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 
     db.init_app(app)
 
@@ -41,6 +43,7 @@ def create_app():
 app = create_app()
 app.app_context().push()
 ma = Marshmallow(app)
+
 
 
 

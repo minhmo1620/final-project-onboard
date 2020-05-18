@@ -9,14 +9,15 @@ class UserModel(db.Model):
 	username = db.Column(db.String(80))
 	password = db.Column(db.String(100))
 	salt = db.Column(db.String(100))
-	# token = db.Column(db.String(100))
+	token = db.Column(db.String(100))
 
 	items = db.relationship('ItemModel')
 
-	def __init__(self, username, password, salt):
+	def __init__(self, username, password, salt, token):
 		self.username = username
 		self.password = password
 		self.salt = salt
+		self.token = token
 
 	def save_to_db(self):
 		db.session.add(self)
