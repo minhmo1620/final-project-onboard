@@ -1,7 +1,8 @@
 import os
 import random
 import jwt
-from flask import Blueprint, request, jsonify, Response
+import requests
+from flask import Blueprint, request, jsonify
 from functools import wraps
 from ..helpers import hash_password
 from ..models.users import UserModel
@@ -9,6 +10,7 @@ from app import db
 
 users = Blueprint('users', __name__)
 secret_key = "fwiefh3289fy3fh3efi23f392f"
+
 
 #create random salt
 def create_salt():
@@ -18,17 +20,31 @@ def create_salt():
         chars.append(random.choice(ALPHABET))
     return "".join(chars)
 
+
 def token_required(f):
     @wraps(f)
     def decorator(*arg, **kwargs):
-        token = request.args.get('token')
-        try:
-            data = jwt.decode(token, secret_key)
-        except:
-            return jsonify({'message':'Token is invalid'})
-        return f(*arg, **kwargs)
+        token = request.headers["Authorization"].split()
+
+        if token[0] != "Bearer":
+            return jsonify({"message": "Invalid token"}), 401
+        else:
+            try:
+                data = jwt.decode(token[1], secret_key)
+                username = data['user']
+                user = UserModel.find_by_username(username)
+            except:
+                return jsonify({'message': 'Token is invalid'}), 401
+            return f(*arg, **kwargs, user_id=user.id)
     return decorator
 
+
+@users.route('/check', methods=['POST'])
+@token_required
+def check(token):
+    data = request.headers
+    print(data["Authorization"].split())
+    return jsonify({})
 
 @users.route('/users', methods=['POST'])
 def create_user():
