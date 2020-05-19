@@ -1,7 +1,7 @@
 import os
 import random
 import jwt
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Response
 from functools import wraps
 from ..helpers import hash_password
 from ..models.users import UserModel
@@ -50,7 +50,7 @@ def create_user():
     password = data['password']
 
     if UserModel.find_by_username(username):
-        return jsonify({'message': 'existed username'})
+        return jsonify({'message': 'existed username'}), 400
 
     salt = create_salt()
 
@@ -63,7 +63,7 @@ def create_user():
     new_user = UserModel(username, hashed_pwd, salt)
     new_user.save_to_db()
 
-    return jsonify({'access_token': token_decoded})
+    return jsonify({'access_token': token_decoded}), 201
 
 
 @users.route('/auth', methods= ['POST'])
@@ -84,8 +84,8 @@ def auth():
         token = jwt.encode({'user': username}, secret_key)
 
         token_decoded = token.decode('UTF-8')
-        return jsonify(token_decoded)
+        return jsonify(token_decoded), 200
     else:
-        return jsonify({'message': 'wrong password or username'})
+        return jsonify({'message': 'wrong password or username'}), 401
 
 

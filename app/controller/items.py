@@ -16,8 +16,8 @@ def get_items(category_id):
 	list_items = db.session.query(ItemModel).filter(ItemModel.category_id == category_id)
 	res = []
 	for i in list_items:
-		res.append(i.json())
-	return jsonify({"categories": res})
+		res.append(i.name)
+	return jsonify({"categories": res}), 200
 
 
 @items.route('/categories/<int:category_id>/items', methods=['POST'])
@@ -37,18 +37,18 @@ def create_item(category_id):
 
 	item_name = data['name']
 	item_description = data['description']
-	category_id = data['category_id']
 
 	item = db.session.query(ItemModel).filter(ItemModel.category_id == category_id)\
 		.filter(ItemModel.name == item_name).first()
 
 	if item:
-		return jsonify({'message':'existed item'})
+		return jsonify({'message': 'existed item'}), 400
 
 	new_item = ItemModel(item_name, item_description, category_id)
 	new_item.save_to_db()
 
-	return jsonify({'message':'created!'})
+	return jsonify({'message': 'created!'}), 201
+
 
 @items.route('/categories/<int:category_id>/items/<int:item_id>', methods=['GET'])
 def get_item(category_id, item_id):
@@ -67,9 +67,9 @@ def get_item(category_id, item_id):
 	item = db.session.query(ItemModel).filter(ItemModel.id == item_id).first()
 
 	if item:
-		return jsonify({"item": item.name, "description": item.description})
+		return jsonify({"item": item.name, "description": item.description}), 200
 	else:
-		return jsonify({"message":"item not found"})
+		return jsonify({"message":"item not found"}), 404
 
 
 @items.route('/categories/<int:category_id>/items/<int:item_id>', methods=['DELETE'])
@@ -87,9 +87,9 @@ def delete_item(category_id, item_id):
 
 	if item:
 		item.delete_from_db()
-		return jsonify({"message": "deleted!"})
+		return jsonify({"message": "deleted!"}), 200
 	else:
-		return jsonify({"message": "item not found"})
+		return jsonify({"message": "item not found"}), 404
 
 
 @items.route('/categories/<int:category_id>/items/<int:item_id>', methods=['PUT'])
@@ -110,6 +110,6 @@ def edit_item(category_id, item_id):
 
 	if item:
 		item.description = description
-		return jsonify({"message": "updated!"})
+		return jsonify({"message": "updated!"}), 200
 	else:
-		return jsonify({"message": "item not found"})
+		return jsonify({"message": "item not found"}), 404

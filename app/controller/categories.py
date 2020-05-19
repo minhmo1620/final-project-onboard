@@ -15,8 +15,8 @@ def get_categories():
     list_categories = db.session.query(CategoryModel)
     res = []
     for i in list_categories:
-        res.append(i.json())
-    return jsonify({"categories":res})
+        res.append(i.name)
+    return jsonify({"categories": res}), 200
 
 
 @categories.route('/categories', methods=['POST'])
@@ -32,10 +32,10 @@ def create_category():
     category_description = data['description']
 
     if CategoryModel.find_by_name(category_name):
-        return jsonify({'message': 'existed category'})
+        return jsonify({'message': 'existed category'}), 400
 
     new_category = CategoryModel(category_name, category_description)
     new_category.save_to_db()
 
-    return jsonify({'message': "ok good"})
+    return jsonify({'message': "Created item successfully"}), 201
 
