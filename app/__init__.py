@@ -16,10 +16,10 @@ def create_app():
 
     app = Flask(__name__)
     # app.config.from_envvar('APP_CONFIG_FILE')
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mia@localhost/app'
-    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///data.db"
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mia@localhost/app'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    # app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///data.db"
+    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
     db.init_app(app)
