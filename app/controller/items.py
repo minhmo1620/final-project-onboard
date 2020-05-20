@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from marshmallow import ValidationError
 from app import db
 from ..models.items import ItemModel, ItemSchema
+from ..models.categories import CategorySchema
 from .users import token_required
 
 items = Blueprint('items', __name__)
@@ -14,10 +15,11 @@ def get_items(category_id):
 	output: show all items in that category
 		- each item: name of item
 	"""
-	list_items = db.session.query(ItemModel).filter(ItemModel.category_id == category_id)
+	list_items = db.session.query(ItemModel).filter(ItemModel.category_id == category_id).all()
 	res = []
+	schema = ItemSchema()
 	for i in list_items:
-		res.append(i.name)
+		res.append(schema.dump(i))
 	return jsonify({"categories": res}), 200
 
 
@@ -67,9 +69,9 @@ def get_item(category_id, item_id):
 	- raise error if not
 	"""
 	item = db.session.query(ItemModel).filter(ItemModel.id == item_id).first()
-
+	schema = ItemSchema()
 	if item:
-		return jsonify({"item": item.name, "description": item.description}), 200
+		return jsonify(schema.dump(item)), 200
 	else:
 		return jsonify({"message": "item not found"}), 404
 
@@ -112,11 +114,11 @@ def edit_item(category_id, item_id, user_id):
 	description = data['description']
 
 	item = db.session.query(ItemModel).filter(ItemModel.id == item_id).first()
-
+	schema = ItemSchema()
 	if item:
 		if item.user_id == user_id:
 			item.description = description
-			return jsonify({"message": "updated!"}), 200
+			return jsonify(schema.dump(item)), 200
 		else:
 			return jsonify({"message": "Unauthorized"}), 401
 	else:

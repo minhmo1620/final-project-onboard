@@ -14,10 +14,11 @@ def get_categories():
     input:
     output: return all categories in the catalog
     """
-    list_categories = db.session.query(CategoryModel)
+    list_categories = db.session.query(CategoryModel).all()
     res = []
+    schema = CategorySchema()
     for i in list_categories:
-        res.append(i.name)
+        res.append(schema.dump(i))
     return jsonify({"categories": res}), 200
 
 

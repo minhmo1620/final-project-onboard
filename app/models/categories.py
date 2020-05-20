@@ -30,7 +30,9 @@ class CategorySchema(Schema):
 	name = fields.Str()
 	description = fields.Str()
 
-
+	class Meta:
+		fields = ("name", "description")
+		ordered = True
 
 
 category_schema = CategorySchema()

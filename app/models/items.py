@@ -38,6 +38,10 @@ class ItemSchema(Schema):
 	category_id = fields.Int()
 	user_id = fields.Int()
 
+	class Meta:
+		fields = ("name", "description")
+		ordered = True
+
 
 item_schema = ItemSchema()
 items_schema = ItemSchema(many=True)
