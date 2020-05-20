@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
-from ..models.categories import CategoryModel
+from marshmallow import ValidationError
+
 from app import db
+from ..models.categories import CategoryModel, CategorySchema
 
 
 categories = Blueprint('categories', __name__)
@@ -28,12 +30,19 @@ def create_category():
         - raise error for existed category
     """
     data = request.get_json()
+    try:
+        result = CategorySchema().load(data)
+    except ValidationError as err:
+        return jsonify(err.messages), 422
+
     category_name = data['name']
     category_description = data['description']
 
     if CategoryModel.find_by_name(category_name):
         return jsonify({'message': 'existed category'}), 400
 
+
+    #new_category = result
     new_category = CategoryModel(category_name, category_description)
     new_category.save_to_db()
 

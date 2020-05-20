@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
-from flask_jwt import jwt_required
+from marshmallow import ValidationError
 from app import db
-from ..models.items import ItemModel
+from ..models.items import ItemModel, ItemSchema
 from .users import token_required
 
 items = Blueprint('items', __name__)
@@ -36,6 +36,11 @@ def create_item(category_id, user_id):
 	"""
 	data = request.get_json()
 
+	try:
+		res = ItemSchema().load(data)
+	except ValidationError as err:
+		return jsonify(err.messages), 422
+
 	item_name = data['name']
 	item_description = data['description']
 
@@ -61,14 +66,12 @@ def get_item(category_id, item_id):
 	- item id and description (if found)
 	- raise error if not
 	"""
-	data = request.get_json()
-
 	item = db.session.query(ItemModel).filter(ItemModel.id == item_id).first()
 
 	if item:
 		return jsonify({"item": item.name, "description": item.description}), 200
 	else:
-		return jsonify({"message":"item not found"}), 404
+		return jsonify({"message": "item not found"}), 404
 
 
 @items.route('/categories/<int:category_id>/items/<int:item_id>', methods=['DELETE'])
@@ -78,7 +81,6 @@ def delete_item(category_id, item_id, user_id):
 	input: item_id, category_id
 	output: delete from item list
 	"""
-
 	item = db.session.query(ItemModel).filter(ItemModel.id == item_id).first()
 
 	if item:
@@ -101,6 +103,11 @@ def edit_item(category_id, item_id, user_id):
 		- raise error if not existed
 	"""
 	data = request.get_json()
+
+	try:
+		ItemSchema().load(data)
+	except ValidationError as err:
+		return jsonify(err.messages), 422
 
 	description = data['description']
 

@@ -1,5 +1,5 @@
 from ..db import db
-from marshmallow import Schema
+from marshmallow import Schema, fields
 
 class CategoryModel(db.Model):
 	__tablename__ = 'categories'
@@ -27,8 +27,10 @@ class CategoryModel(db.Model):
 
 
 class CategorySchema(Schema):
-	class Meta:
-		fields = ("name", "description")
+	name = fields.Str()
+	description = fields.Str()
+
+
 
 
 category_schema = CategorySchema()

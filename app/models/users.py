@@ -1,5 +1,5 @@
 from ..db import db
-from marshmallow import Schema
+from marshmallow import Schema, fields
 
 
 class UserModel(db.Model):
@@ -31,8 +31,9 @@ class UserModel(db.Model):
 
 
 class UserSchema(Schema):
-	class Meta:
-		fields = ("id", "username")
+	username = fields.Str()
+	password = fields.Str()
+	salt = fields.Str()
 
 
 user_schema = UserSchema()
