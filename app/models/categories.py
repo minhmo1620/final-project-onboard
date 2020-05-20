@@ -1,6 +1,7 @@
 from ..db import db
 from marshmallow import Schema, fields
 
+
 class CategoryModel(db.Model):
 	__tablename__ = 'categories'
 
@@ -32,8 +33,3 @@ class CategorySchema(Schema):
 
 	class Meta:
 		fields = ("name", "description")
-		ordered = True
-
-
-category_schema = CategorySchema()
-categories_schema = CategorySchema(many=True)

@@ -34,8 +34,3 @@ class UserSchema(Schema):
 	username = fields.Str()
 	password = fields.Str()
 	salt = fields.Str()
-
-
-
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)

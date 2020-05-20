@@ -10,9 +10,9 @@ from ..models.users import UserModel, UserSchema
 from app import db
 
 users = Blueprint('users', __name__)
-secret_key = 'e9cac0f3f4Yd47a3be91d7b8f5'
+secret_key = str(os.getenv('SECRET_KEY'))
 
-#create random salt
+
 def create_salt():
     ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     chars = []
@@ -44,6 +44,7 @@ def check(token):
     data = request.headers
     print(data["Authorization"].split())
     return jsonify({})
+
 
 @users.route('/users', methods=['POST'])
 def create_user():

@@ -40,8 +40,4 @@ class ItemSchema(Schema):
 
 	class Meta:
 		fields = ("name", "description")
-		ordered = True
 
-
-item_schema = ItemSchema()
-items_schema = ItemSchema(many=True)
