@@ -1,17 +1,10 @@
-import os
-import pytest
-
-from app import app, db, create_app
+from .helpers import client
 
 
-@pytest.fixture(scope='module')
-def client():
-    app = create_app('test')
-    client = app.test_client()
-    ctx = app.app_context()
-    ctx.push()
-    yield client  # this is where the testing happens!
-    ctx.pop()
+def test_create_category(client):
+    data = {"name": "mia", "description": "abc"}
+    rv = client.post('/categories', json=data)
+
 
 def user(client):
     data1 = {"username": "miso", "password": "abc"}
@@ -29,11 +22,11 @@ def user(client):
 def headers(client):
     mimetype = 'application/json'
     token = user(client)
-    headers = {
+    header = {
         'Content-Type': mimetype,
         'Authorization': token
     }
-    return headers
+    return header
 
 
 def test_create_item(client):
@@ -45,13 +38,11 @@ def test_create_item(client):
 
 def test_get_items(client):
     rv = client.get('categories/1/items', json={})
-
     assert rv.status_code == 200
 
 
 def test_get_item(client):
     rv = client.get('categories/1/items/1', json={})
-
     assert rv.status_code == 200
 
 

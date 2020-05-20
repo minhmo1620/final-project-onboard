@@ -74,7 +74,7 @@ def create_user():
 
     token = jwt.encode({'user': username}, secret_key)
 
-    token_decoded = 'Bearer '+ str(token.decode('UTF-8'))
+    token_decoded = 'Bearer '+str(token.decode('UTF-8'))
 
     new_user = UserModel(username, hashed_pwd, salt)
     new_user.save_to_db()
@@ -99,7 +99,7 @@ def auth():
     if user and hash_password(password + user.salt) == user.password:
         token = jwt.encode({'user': username}, secret_key)
 
-        token_decoded = 'Bearer '+ str(token.decode('UTF-8'))
+        token_decoded = 'Bearer '+str(token.decode('UTF-8'))
         return jsonify({'access_token': token_decoded}), 200
     else:
         return jsonify({'message': 'wrong password or username'}), 401

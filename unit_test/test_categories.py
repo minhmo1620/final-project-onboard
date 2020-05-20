@@ -1,17 +1,4 @@
-import os
-import pytest
-
-from app import app, db, create_app
-
-
-@pytest.fixture(scope='module')
-def client():
-    app = create_app('test')
-    client = app.test_client()
-    ctx = app.app_context()
-    ctx.push()
-    yield client  # this is where the testing happens!
-    ctx.pop()
+from .helpers import client
 
 
 def test_get_categories(client):
