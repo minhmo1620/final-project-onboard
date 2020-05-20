@@ -9,13 +9,12 @@ from .models.categories import CategoryModel
 
 
 def create_app(env):
-
-    env = {'test':'app.config.staging.TestingConfig',
-           'development':'app.config.development.DevelopConfig',
-           'local': 'app.config.staging.TestingConfig',
-           'production':'app.config.staging.TestingConfig'}
+    env_list = {'test': 'app.config.staging.TestingConfig',
+                'development': 'app.config.development.DevelopmentConfig',
+                'local': 'app.config.local.LocalConfig',
+                'production': 'app.config.production.ProductionConfig'}
     app = Flask(__name__)
-    app.config.from_object('app.config.staging.TestingConfig')
+    app.config.from_object(env_list[env])
     db.init_app(app)
 
     with app.app_context():
@@ -32,14 +31,6 @@ def create_app(env):
     return app
 
 
-app = create_app()
+env = os.environ.get('ENV', 'test')
+app = create_app(env)
 app.app_context().push()
-
-
-
-
-
-
-
-
-
