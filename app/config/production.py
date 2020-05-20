@@ -1,5 +1,6 @@
 import os
-from .local import Config
+from .base import Config
+
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:mia@localhost/app'

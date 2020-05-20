@@ -9,7 +9,7 @@ from ..models.users import UserModel
 from app import db
 
 users = Blueprint('users', __name__)
-secret_key = "fwiefh3289fy3fh3efi23f392f"
+secret_key = 'e9cac0f3f4Yd47a3be91d7b8f5'
 
 
 #create random salt
@@ -74,7 +74,7 @@ def create_user():
 
     token = jwt.encode({'user': username}, secret_key)
 
-    token_decoded = token.decode('UTF-8')
+    token_decoded = 'Bearer '+ str(token.decode('UTF-8'))
 
     new_user = UserModel(username, hashed_pwd, salt)
     new_user.save_to_db()
@@ -99,8 +99,8 @@ def auth():
     if user and hash_password(password + user.salt) == user.password:
         token = jwt.encode({'user': username}, secret_key)
 
-        token_decoded = token.decode('UTF-8')
-        return jsonify(token_decoded), 200
+        token_decoded = 'Bearer '+ str(token.decode('UTF-8'))
+        return jsonify({'access_token': token_decoded}), 200
     else:
         return jsonify({'message': 'wrong password or username'}), 401
 
