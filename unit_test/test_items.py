@@ -162,5 +162,3 @@ def test_delete_item(client):
     header3 = headers(client, "mia", "abc")
     rv = client.delete('/categories/1/items/1', json={}, headers=header3)
     assert rv.status_code == 200
-
-

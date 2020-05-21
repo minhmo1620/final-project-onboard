@@ -37,4 +37,3 @@ def test_auth(client):
     data = {"username": "mia", "password": "abcd"}
     rv = client.post('/auth', json=data)
     assert rv.status_code == 401
-
