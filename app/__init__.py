@@ -30,7 +30,6 @@ def create_app(env):
 
     return app
 
-
 env = os.environ.get('ENV', 'development')
 app = create_app(env)
 app.app_context().push()

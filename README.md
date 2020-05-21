@@ -46,10 +46,13 @@ Install dependencies in virtual environment:
 
 ## Run Application
 
+app.config.getenv('MINH' )
+
 Start the server by running:
 
     $ export FLASK_ENV=development
-    $ export APP_CONFIG_FILE=config/development.py
+    $ export ENV=local
+    $ export MINH=abc
     $ export FLASK_APP=app
     $ python3 -m flask run
 
