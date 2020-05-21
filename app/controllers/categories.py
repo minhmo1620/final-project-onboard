@@ -17,8 +17,7 @@ def get_categories():
     # query
     list_categories = db.session.query(CategoryModel).all()
 
-    # format by marshmallow
-    res = [CategorySchema().dump(i) for i in list_categories]
+    res = CategorySchema(many=True).dump(list_categories)
 
     return jsonify({"categories": res}), 200
 

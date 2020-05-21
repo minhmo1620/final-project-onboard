@@ -9,9 +9,9 @@ def client():
     client = app.test_client()
 
     with app.app_context():
-        from app.controller.items import items
-        from app.controller.categories import categories
-        from app.controller.users import users
+        from app.controllers.items import items
+        from app.controllers.categories import categories
+        from app.controllers.users import users
 
         app.register_blueprint(categories, url_prefix="/")
         app.register_blueprint(items, url_prefix="/")

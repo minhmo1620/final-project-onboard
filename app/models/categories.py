@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields
 from ..db import db
 
+
 class CategoryModel(db.Model):
     __tablename__ = 'categories'
 
@@ -12,8 +13,8 @@ class CategoryModel(db.Model):
     # relationship
     items = db.relationship('ItemModel')
 
-    def __init__(self, category, description):
-        self.name = category
+    def __init__(self, name, description):
+        self.name = name
         self.description = description
 
     # query by username
@@ -25,6 +26,7 @@ class CategoryModel(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
 
 # Marshmallow
 class CategorySchema(Schema):

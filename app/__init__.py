@@ -9,10 +9,10 @@ from .models.categories import CategoryModel
 
 
 def create_app(env):
-    env_list = {'test': 'app.config.staging.TestingConfig',
-                'development': 'app.config.development.DevelopmentConfig',
-                'local': 'app.config.local.LocalConfig',
-                'production': 'app.config.production.ProductionConfig'}
+    env_list = {'test': 'app.configs.staging.TestingConfig',
+                'development': 'app.configs.development.DevelopmentConfig',
+                'local': 'app.configs.local.LocalConfig',
+                'production': 'app.configs.production.ProductionConfig'}
 
     app = Flask(__name__)
     app.config.from_object(env_list[env])
@@ -26,9 +26,9 @@ def create_app(env):
         return jsonify({"message": str(e)}), code
 
     with app.app_context():
-        from .controller.items import items
-        from .controller.categories import categories
-        from .controller.users import users
+        from .controllers.items import items
+        from .controllers.categories import categories
+        from .controllers.users import users
 
         app.register_blueprint(categories, url_prefix="/")
         app.register_blueprint(items, url_prefix="/")
