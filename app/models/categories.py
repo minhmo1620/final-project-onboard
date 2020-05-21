@@ -1,6 +1,5 @@
-from ..db import db
 from marshmallow import Schema, fields
-
+from ..db import db
 
 class CategoryModel(db.Model):
     __tablename__ = 'categories'

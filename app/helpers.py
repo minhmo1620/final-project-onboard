@@ -1,8 +1,5 @@
 import hashlib
 
-# from werkzeug.security import safe_str_cmp
-# from .models.users import UserModel
-
 
 def hash_password(users_password):
     """

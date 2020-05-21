@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request
 from marshmallow import ValidationError
 from app import db
-
 from ..models.items import ItemModel, ItemSchema
 from ..models.categories import CategoryModel
 from .users import token_required
