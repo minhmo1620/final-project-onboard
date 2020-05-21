@@ -3,6 +3,7 @@ from marshmallow import ValidationError
 from app import db
 
 from ..models.items import ItemModel, ItemSchema
+from ..models.categories import CategoryModel
 from .users import token_required
 
 items = Blueprint('items', __name__)
@@ -19,13 +20,12 @@ def get_items(category_id):
 	# query all items in that category
 	list_items = db.session.query(ItemModel).filter(ItemModel.category_id == category_id).all()
 
-	# create marshmallow instance
-	schema = ItemSchema(many=True)
-
 	# format output by marshmallow
-	res = [schema.dumps(list_items)]
+	res = [ItemSchema().dump(i) for i in list_items]
 
-	return jsonify({"categories": res}), 200
+	# category name
+	category = db.session.query(CategoryModel).filter(CategoryModel.id == category_id).first().name
+	return jsonify({str(category): res}), 200
 
 
 @items.route('/categories/<int:category_id>/items', methods=['POST'])
@@ -46,7 +46,7 @@ def create_item(category_id, user_id):
 
 	# check the validity of input
 	try:
-		res = ItemSchema().load(data)
+		ItemSchema().load(data)
 	except ValidationError as err:
 		return jsonify(err.messages), 422
 

@@ -1,6 +1,5 @@
 import os
-from flask import Flask, Blueprint
-from .helpers import authenticate, identity
+from flask import Flask
 
 from .db import db
 from .models.users import UserModel
@@ -13,6 +12,7 @@ def create_app(env):
                 'development': 'app.config.development.DevelopmentConfig',
                 'local': 'app.config.local.LocalConfig',
                 'production': 'app.config.production.ProductionConfig'}
+
     app = Flask(__name__)
     app.config.from_object(env_list[env])
     db.init_app(app)

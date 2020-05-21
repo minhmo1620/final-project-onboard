@@ -1,4 +1,4 @@
-from app import db
+from ..db import db
 from marshmallow import Schema, fields
 
 
@@ -17,11 +17,15 @@ class CategoryModel(db.Model):
 		self.name = category
 		self.description = description
 
+	# query by username
+	@classmethod
+	def find_by_name(cls, name):
+		return cls.query.filter_by(name=name).first()
+
 	# add object to database
 	def save_to_db(self):
 		db.session.add(self)
 		db.session.commit()
-
 
 # Marshmallow
 class CategorySchema(Schema):

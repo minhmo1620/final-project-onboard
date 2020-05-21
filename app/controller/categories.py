@@ -2,9 +2,9 @@ from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
 
 from app import db
-from ..models.categories import CategoryModel, CategorySchema
+from app.models.categories import CategoryModel, CategorySchema
 
-
+# create blueprint for categories
 categories = Blueprint('categories', __name__)
 
 
@@ -14,11 +14,12 @@ def get_categories():
     input:
     output: return all categories in the catalog
     """
+    # query
     list_categories = db.session.query(CategoryModel).all()
-    res = []
-    schema = CategorySchema()
-    for i in list_categories:
-        res.append(schema.dump(i))
+
+    # format by marshmallow
+    res = [CategorySchema().dump(i) for i in list_categories]
+
     return jsonify({"categories": res}), 200
 
 
@@ -30,20 +31,25 @@ def create_category():
         - add the category successfully (if not existed) --> 200
         - raise error for existed category
     """
+    # take the input
     data = request.get_json()
+
+    # check the validity of the input
     try:
-        result = CategorySchema().load(data)
+        CategorySchema().load(data)
     except ValidationError as err:
         return jsonify(err.messages), 422
 
+    # information - name & description
     category_name = data['name']
     category_description = data['description']
 
+    # check the existent of item
     if CategoryModel.find_by_name(category_name):
         return jsonify({'message': 'existed category'}), 400
 
+    # create a new category and add to database
     new_category = CategoryModel(category_name, category_description)
     new_category.save_to_db()
 
     return jsonify({'message': "Created item successfully"}), 201
-
