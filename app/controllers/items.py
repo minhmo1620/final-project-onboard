@@ -20,7 +20,7 @@ def get_items(category_id):
     list_items = db.session.query(ItemModel).filter(ItemModel.category_id == category_id).all()
 
     # format output by marshmallow
-    res = [ItemSchema().dump(i) for i in list_items]
+    res = ItemSchema(many=True).dump(list_items)
 
     # category name
     category = db.session.query(CategoryModel).filter(CategoryModel.id == category_id).first().name
@@ -63,13 +63,14 @@ def create_item(category_id, user_id):
 
     # create a new item and save to database
     new_item = ItemModel(item_name, item_description, category_id, user_id)
-    new_item.save_to_db()
+    db.session.add(new_item)
+    db.session.commit()
 
     return jsonify({'message': 'created!'}), 201
 
 
 @items.route('/categories/<int:category_id>/items/<int:item_id>', methods=['GET'])
-def get_item(item_id,**__):
+def get_item(item_id, **__):
     """
     input:
         - category_id (int)
@@ -82,10 +83,9 @@ def get_item(item_id,**__):
     item = db.session.query(ItemModel).filter(ItemModel.id == item_id).first()
 
     # check the validity
-    if item:
-        return jsonify(ItemSchema().dump(item)), 200
-    else:
+    if not item:
         return jsonify({"message": "item not found"}), 404
+    return jsonify(ItemSchema().dump(item)), 200
 
 
 @items.route('/categories/<int:category_id>/items/<int:item_id>', methods=['DELETE'])
@@ -100,22 +100,16 @@ def delete_item(item_id, user_id, **__):
     item = db.session.query(ItemModel).filter(ItemModel.id == item_id).first()
 
     # if item is in the database
-    if item:
-
-        # authorized
-        if item.user_id == user_id:
-
-            # delete item from db
-            item.delete_from_db()
-            return jsonify({"message": "deleted!"}), 200
-
-        # unauthorized
-        else:
-            return jsonify({"message": "Unauthorized"}), 401
-
-    # item not found
-    else:
+    if not item:
         return jsonify({"message": "item not found"}), 404
+
+    # unauthorized
+    if item.user_id != user_id:
+        return jsonify({"message": "Unauthorized"}), 401
+
+    # authorized
+    item.delete_from_db()
+    return jsonify({"message": "deleted!"}), 200
 
 
 @items.route('/categories/<int:category_id>/items/<int:item_id>', methods=['PUT'])
@@ -142,22 +136,18 @@ def edit_item(item_id, user_id, **__):
     # query the target item
     item = db.session.query(ItemModel).filter(ItemModel.id == item_id).first()
 
-    # if found item
-    if item:
-
-        # authorized
-        if item.user_id == user_id:
-
-            # update
-            item.description = description
-
-            # format output
-            return jsonify(ItemSchema().dump(item)), 200
-
-        # unauthorized
-        else:
-            return jsonify({"message": "Unauthorized"}), 401
-
     # item not found
-    else:
+    if not item:
         return jsonify({"message": "item not found"}), 404
+
+    # unauthorized
+    if item.user_id != user_id:
+        return jsonify({"message": "Unauthorized"}), 401
+
+    # authorized
+
+    # update
+    item.description = description
+
+    # format output
+    return jsonify(ItemSchema().dump(item)), 200
