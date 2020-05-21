@@ -98,7 +98,8 @@ def create_user():
 
     # create a new user and add to database
     new_user = UserModel(username, hashed_pwd, salt)
-    new_user.save_to_db()
+    db.session.add(new_user)
+    db.session.commit()
 
     # return the token
     return jsonify({'access_token': token_decoded}), 201
@@ -130,22 +131,16 @@ def auth():
     user = db.session.query(UserModel).filter(UserModel.username == username).first()
 
     # if user is found
-    if user:
+    if not user:
+        return jsonify({'message': 'cannot find username'}), 404
 
-        # password is correct
-        if hash_password(password + user.salt) == user.password:
+    # password is wrong
+    if hash_password(password + user.salt) != user.password:
+        return jsonify({'message': 'wrong password'}), 401
 
-            # create token
-            token = jwt.encode({'user': username}, secret_key)
-            token_decoded = 'Bearer ' + str(token.decode('UTF-8'))
+    # create token
+    token = jwt.encode({'user': username}, secret_key)
+    token_decoded = 'Bearer ' + str(token.decode('UTF-8'))
 
-            # return decoded token
-            return jsonify({'access_token': token_decoded}), 200
-
-        # password is wrong
-        else:
-            return jsonify({'message': 'wrong password'}), 401
-
-    # user not found
-    else:
-        return jsonify({'message': 'wrong username'}), 401
+    # return decoded token
+    return jsonify({'access_token': token_decoded}), 200
