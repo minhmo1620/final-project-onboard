@@ -1,5 +1,6 @@
 import os
-from flask import Flask
+from flask import Flask, jsonify
+from werkzeug.exceptions import HTTPException
 
 from .db import db
 from .models.users import UserModel
@@ -16,6 +17,13 @@ def create_app(env):
     app = Flask(__name__)
     app.config.from_object(env_list[env])
     db.init_app(app)
+
+    @app.errorhandler(Exception)
+    def handle_error(e):
+        code = 500
+        if isinstance(e, HTTPException):
+            code = e.code
+        return jsonify({"message": str(e)}), code
 
     with app.app_context():
         from .controller.items import items

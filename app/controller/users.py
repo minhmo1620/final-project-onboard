@@ -9,7 +9,6 @@ from functools import wraps
 from ..helpers import hash_password
 from ..models.users import UserModel, UserSchema
 
-
 # create blueprint
 users = Blueprint('users', __name__)
 
@@ -32,6 +31,7 @@ def token_required(f):
     """
     Decorator to validate the token and return user_id
     """
+
     @wraps(f)
     def decorator(*arg, **kwargs):
         token = request.headers["Authorization"].split()
@@ -44,7 +44,8 @@ def token_required(f):
                 user = UserModel.find_by_username(username)
             except:
                 return jsonify({'message': 'Token is invalid'}), 401
-            return f(*arg, **kwargs, user_id=user.id)
+        return f(*arg, **kwargs, user_id=user.id)
+
     return decorator
 
 
@@ -89,11 +90,11 @@ def create_user():
 
     # create salt and hash password
     salt = create_salt()
-    hashed_pwd = hash_password(str(password+salt))
+    hashed_pwd = hash_password(str(password + salt))
 
     # encode the token and format token
     token = jwt.encode({'user': username}, secret_key)
-    token_decoded = 'Bearer '+str(token.decode('UTF-8'))
+    token_decoded = 'Bearer ' + str(token.decode('UTF-8'))
 
     # create a new user and add to database
     new_user = UserModel(username, hashed_pwd, salt)
@@ -136,7 +137,7 @@ def auth():
 
             # create token
             token = jwt.encode({'user': username}, secret_key)
-            token_decoded = 'Bearer '+str(token.decode('UTF-8'))
+            token_decoded = 'Bearer ' + str(token.decode('UTF-8'))
 
             # return decoded token
             return jsonify({'access_token': token_decoded}), 200
