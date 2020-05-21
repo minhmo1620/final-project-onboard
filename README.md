@@ -52,7 +52,6 @@ Start the server by running:
 
     $ export FLASK_ENV=development
     $ export ENV=local
-    $ export MINH=abc
     $ export FLASK_APP=app
     $ python3 -m flask run
 
@@ -62,5 +61,4 @@ To run the unit tests use the following commands:
     $ python3 -m venv venv_unit
     $ source venv_unit/bin/activate
     $ pip install -r requirements.txt
-    $ export DATABASE_URI='sqlite:///web.db'
     $ pytest unit_test
