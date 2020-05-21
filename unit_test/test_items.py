@@ -1,7 +1,3 @@
-# import fixture function to run test
-from .helpers import client
-
-
 def test_create_category(client):
     """
     This test is to create a new category in the database to test other functions for item (get, put, post, delete)

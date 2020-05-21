@@ -1,7 +1,3 @@
-# import fixture function to run test
-from .helpers import client
-
-
 def test_get_categories(client):
     """
     Test: Get all categories in the catalog

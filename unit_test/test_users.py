@@ -1,7 +1,3 @@
-# import fixture function to run test
-from .helpers import client
-
-
 def test_create_user(client):
     """
     Test: Create a new user
