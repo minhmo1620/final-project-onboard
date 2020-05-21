@@ -42,8 +42,6 @@ def create_category():
     if CategoryModel.find_by_name(category_name):
         return jsonify({'message': 'existed category'}), 400
 
-
-    #new_category = result
     new_category = CategoryModel(category_name, category_description)
     new_category.save_to_db()
 

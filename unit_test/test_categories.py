@@ -13,3 +13,11 @@ def test_create_category(client):
 
     rsp = client.post('/categories', json=data)
     assert rsp.status_code == 400
+
+    data = {"name": 123, "description": "abc"}
+    rv = client.post('/categories', json=data)
+    assert rv.status_code == 422
+
+    data = {"name": "mia", "description": 123}
+    rv = client.post('/categories', json=data)
+    assert rv.status_code == 422
