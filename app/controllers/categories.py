@@ -49,6 +49,7 @@ def create_category():
 
     # create a new category and add to database
     new_category = CategoryModel(category_name, category_description)
-    new_category.save_to_db()
+    db.session.add(new_category)
+    db.session.commit()
 
     return jsonify({'message': "Created item successfully"}), 201
