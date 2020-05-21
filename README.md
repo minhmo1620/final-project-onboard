@@ -46,8 +46,6 @@ Install dependencies in virtual environment:
 
 ## Run Application
 
-app.config.getenv('MINH' )
-
 Start the server by running:
 
     $ export FLASK_ENV=development
