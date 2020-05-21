@@ -2,10 +2,10 @@ import os
 import random
 import jwt
 from marshmallow import ValidationError
-
-from app import db
 from flask import Blueprint, request, jsonify
 from functools import wraps
+
+from app import db
 from ..helpers import hash_password
 from ..models.users import UserModel, UserSchema
 

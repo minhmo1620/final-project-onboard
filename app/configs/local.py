@@ -1,4 +1,4 @@
-from app.config.base import Config
+from app.configs.base import Config
 
 
 class LocalConfig(Config):
