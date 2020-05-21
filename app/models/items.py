@@ -1,6 +1,7 @@
 from app import db
 from marshmallow import Schema, fields
 
+
 class ItemModel(db.Model):
 	__tablename__ = "items"
 
@@ -37,4 +38,3 @@ class ItemSchema(Schema):
 
 	class Meta:
 		fields = ("name", "description")
-
