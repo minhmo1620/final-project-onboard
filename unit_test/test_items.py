@@ -121,7 +121,7 @@ def test_edit_item(client):
 
     # invalid input
     data1 = {"description": (1, 2, 3)}
-    rv = client.post('/categories/1/items', json=data1, headers=header1)
+    rv = client.post('/categories/1/items/1', json=data1, headers=header1)
     assert rv.status_code == 422
 
     # update successfully
