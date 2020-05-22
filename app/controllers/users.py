@@ -3,11 +3,10 @@ import random
 import jwt
 from marshmallow import ValidationError
 from flask import Blueprint, request, jsonify
-from functools import wraps
 
 from app import db
-from ..helpers import hash_password
-from ..models.users import UserModel, UserSchema
+from app.models.users import UserModel, UserSchema
+from app.helpers import token_required, hash_password
 
 # create blueprint
 users = Blueprint('users', __name__)
@@ -25,27 +24,6 @@ def create_salt():
     for i in range(16):
         chars.append(random.choice(characters))
     return "".join(chars)
-
-
-def token_required(f):
-    """
-    Decorator to validate the token and return user_id
-    """
-
-    @wraps(f)
-    def decorator(*arg, **kwargs):
-        token = request.headers["Authorization"].split()
-        if token[0] != "Bearer":
-            return jsonify({"message": "Invalid token"}), 401
-        try:
-            data = jwt.decode(token[1], secret_key)
-            username = data['user']
-            user = UserModel.find_by_username(username)
-        except:
-            return jsonify({'message': 'Token is invalid'}), 401
-        return f(*arg, **kwargs, user_id=user.id)
-
-    return decorator
 
 
 # check the decorator
