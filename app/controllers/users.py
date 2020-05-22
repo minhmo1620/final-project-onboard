@@ -6,10 +6,10 @@ from flask import Blueprint, request, jsonify
 
 from app import db
 from app.models.users import UserModel, UserSchema
-from app.helpers import token_required, hash_password
+from app.helpers import token_required, hash_password, validate_input
 
 # create blueprint
-users = Blueprint('users', __name__)
+users_blueprint = Blueprint('users', __name__)
 
 # take secret key from .env
 secret_key = str(os.getenv('SECRET_KEY'))
@@ -27,7 +27,7 @@ def create_salt():
 
 
 # check the decorator
-@users.route('/check', methods=['POST'])
+@users_blueprint.route('/check', methods=['POST'])
 @token_required
 def check(user_id):
     data = request.headers
@@ -35,7 +35,8 @@ def check(user_id):
     return jsonify({})
 
 
-@users.route('/users', methods=['POST'])
+@users_blueprint.route('/users', methods=['POST'])
+@validate_input(schema="user")
 def create_user():
     """
     input:
@@ -51,12 +52,6 @@ def create_user():
     # take data from request
     data = request.get_json()
 
-    # validate input
-    try:
-        UserSchema().load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 422
-
     # information - username & password
     username = data['username']
     password = data['password']
@@ -71,7 +66,7 @@ def create_user():
 
     # encode the token and format token
     token = jwt.encode({'user': username}, secret_key)
-    token_decoded = 'Bearer ' + str(token.decode('UTF-8'))
+    token_decoded = 'Bearer ' + (token.decode('UTF-8'))
 
     # create a new user and add to database
     new_user = UserModel(username, hashed_pwd, salt)
@@ -82,7 +77,8 @@ def create_user():
     return jsonify({'access_token': token_decoded}), 201
 
 
-@users.route('/auth', methods=['POST'])
+@users_blueprint.route('/auth', methods=['POST'])
+@validate_input(schema="user")
 def auth():
     """
     input:
@@ -93,12 +89,6 @@ def auth():
     """
     # take data from request
     data = request.get_json()
-
-    # validate input
-    try:
-        UserSchema().load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 422
 
     # information
     username = data['username']
@@ -117,7 +107,7 @@ def auth():
 
     # create token
     token = jwt.encode({'user': username}, secret_key)
-    token_decoded = 'Bearer ' + str(token.decode('UTF-8'))
+    token_decoded = 'Bearer ' + (token.decode('UTF-8'))
 
     # return decoded token
     return jsonify({'access_token': token_decoded}), 200

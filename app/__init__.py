@@ -26,13 +26,13 @@ def create_app(env):
         return jsonify({"message": str(e)}), code
 
     with app.app_context():
-        from .controllers.items import items
-        from .controllers.categories import categories
-        from .controllers.users import users
+        from .controllers.items import items_blueprint
+        from .controllers.categories import categories_blueprint
+        from .controllers.users import users_blueprint
 
-        app.register_blueprint(categories, url_prefix="/")
-        app.register_blueprint(items, url_prefix="/")
-        app.register_blueprint(users, url_prefix="/")
+        app.register_blueprint(categories_blueprint, url_prefix="/")
+        app.register_blueprint(items_blueprint, url_prefix="/")
+        app.register_blueprint(users_blueprint, url_prefix="/")
 
         db.create_all()
 

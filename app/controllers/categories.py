@@ -5,10 +5,10 @@ from app.models.categories import CategoryModel, CategorySchema
 from app.helpers import validate_input
 
 # create blueprint for categories
-categories = Blueprint('categories', __name__)
+categories_blueprint = Blueprint('categories', __name__)
 
 
-@categories.route('/categories', methods=['GET'])
+@categories_blueprint.route('/categories', methods=['GET'])
 def get_categories():
     """
     input:
@@ -22,7 +22,7 @@ def get_categories():
     return jsonify({"categories": res}), 200
 
 
-@categories.route('/categories', methods=['POST'])
+@categories_blueprint.route('/categories', methods=['POST'])
 @validate_input("category")
 def create_category():
     """

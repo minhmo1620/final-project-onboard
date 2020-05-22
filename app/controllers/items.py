@@ -4,10 +4,10 @@ from app.helpers import validate_input, token_required
 from app.models.items import ItemModel, ItemSchema
 from app.models.categories import CategoryModel
 
-items = Blueprint('items', __name__)
+items_blueprint = Blueprint('items', __name__)
 
 
-@items.route('/categories/<int:category_id>/items', methods=['GET'])
+@items_blueprint.route('/categories/<int:category_id>/items', methods=['GET'])
 def get_items(category_id):
     """
     input: category id (int)
@@ -26,7 +26,7 @@ def get_items(category_id):
     return jsonify({str(category): res}), 200
 
 
-@items.route('/categories/<int:category_id>/items', methods=['POST'])
+@items_blueprint.route('/categories/<int:category_id>/items', methods=['POST'])
 @token_required
 @validate_input(schema="item")
 def create_item(category_id, user_id):
@@ -63,7 +63,7 @@ def create_item(category_id, user_id):
     return jsonify({'message': 'created!'}), 201
 
 
-@items.route('/categories/<int:category_id>/items/<int:item_id>', methods=['GET'])
+@items_blueprint.route('/categories/<int:category_id>/items/<int:item_id>', methods=['GET'])
 def get_item(item_id, **__):
     """
     input:
@@ -82,7 +82,7 @@ def get_item(item_id, **__):
     return jsonify(ItemSchema().dump(item)), 200
 
 
-@items.route('/categories/<int:category_id>/items/<int:item_id>', methods=['DELETE'])
+@items_blueprint.route('/categories/<int:category_id>/items/<int:item_id>', methods=['DELETE'])
 @token_required
 def delete_item(item_id, user_id, **__):
     """
@@ -106,7 +106,7 @@ def delete_item(item_id, user_id, **__):
     return jsonify({"message": "deleted!"}), 200
 
 
-@items.route('/categories/<int:category_id>/items/<int:item_id>', methods=['PUT'])
+@items_blueprint.route('/categories/<int:category_id>/items/<int:item_id>', methods=['PUT'])
 @token_required
 @validate_input(schema="item")
 def edit_item(item_id, user_id, **__):

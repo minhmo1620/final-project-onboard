@@ -6,7 +6,7 @@ from flask import jsonify, request
 from functools import wraps
 from marshmallow import ValidationError
 
-from app.models.users import UserModel
+from app.models.users import UserModel, UserSchema
 from app.models.items import ItemSchema
 from app.models.categories import CategorySchema
 
@@ -55,6 +55,8 @@ def validate_input(schema):
                     ItemSchema().load(data)
                 elif schema == "category":
                     CategorySchema().load(data)
+                elif schema == "user":
+                    UserSchema().load(data)
             except ValidationError as err:
                 return jsonify(err.messages), 422
             return f(*args, **kwargs)
