@@ -1,9 +1,8 @@
 from flask import Blueprint, jsonify, request
-from marshmallow import ValidationError
 from app import db
-from ..models.items import ItemModel, ItemSchema
-from ..models.categories import CategoryModel
-from .users import token_required
+from app.helpers import validate_input, token_required
+from app.models.items import ItemModel, ItemSchema
+from app.models.categories import CategoryModel
 
 items = Blueprint('items', __name__)
 
@@ -29,6 +28,7 @@ def get_items(category_id):
 
 @items.route('/categories/<int:category_id>/items', methods=['POST'])
 @token_required
+@validate_input(schema="item")
 def create_item(category_id, user_id):
     """
     input:
@@ -42,12 +42,6 @@ def create_item(category_id, user_id):
     """
     # take response body
     data = request.get_json()
-
-    # check the validity of input
-    try:
-        ItemSchema().load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 422
 
     # get item name and description from request
     item_name = data['name']
@@ -114,6 +108,7 @@ def delete_item(item_id, user_id, **__):
 
 @items.route('/categories/<int:category_id>/items/<int:item_id>', methods=['PUT'])
 @token_required
+@validate_input(schema="item")
 def edit_item(item_id, user_id, **__):
     """
     input: item_id
@@ -123,12 +118,6 @@ def edit_item(item_id, user_id, **__):
     """
     # take json body of request
     data = request.get_json()
-
-    # check the validity of input
-    try:
-        ItemSchema().load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 422
 
     # information - new description
     description = data['description']

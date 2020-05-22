@@ -1,10 +1,14 @@
 import os
 import hashlib
 import jwt
+
 from flask import jsonify, request
 from functools import wraps
-from app.models.users import UserModel
+from marshmallow import ValidationError
 
+from app.models.users import UserModel
+from app.models.items import ItemSchema
+from app.models.categories import CategorySchema
 
 # take secret key from .env
 secret_key = str(os.getenv('SECRET_KEY'))
@@ -36,3 +40,23 @@ def token_required(f):
         return f(*arg, **kwargs, user_id=user.id)
 
     return decorator
+
+
+def validate_input(schema):
+    def function(f):
+        @wraps(f)
+        def decorator(*args, **kwargs):
+            # take the input
+            data = request.get_json()
+
+            # check the validity of the input
+            try:
+                if schema == "item":
+                    ItemSchema().load(data)
+                elif schema == "category":
+                    CategorySchema().load(data)
+            except ValidationError as err:
+                return jsonify(err.messages), 422
+            return f(*args, **kwargs)
+        return decorator
+    return function

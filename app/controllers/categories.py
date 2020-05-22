@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
-from marshmallow import ValidationError
 
 from app import db
 from app.models.categories import CategoryModel, CategorySchema
+from app.helpers import validate_input
 
 # create blueprint for categories
 categories = Blueprint('categories', __name__)
@@ -23,6 +23,7 @@ def get_categories():
 
 
 @categories.route('/categories', methods=['POST'])
+@validate_input("category")
 def create_category():
     """
     input: request new category (category name, description)
@@ -32,12 +33,6 @@ def create_category():
     """
     # take the input
     data = request.get_json()
-
-    # check the validity of the input
-    try:
-        CategorySchema().load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 422
 
     # information - name & description
     category_name = data['name']
