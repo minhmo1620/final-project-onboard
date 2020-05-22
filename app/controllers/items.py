@@ -145,7 +145,6 @@ def edit_item(item_id, user_id, **__):
         return jsonify({"message": "Unauthorized"}), 401
 
     # authorized
-
     # update
     item.description = description
 
