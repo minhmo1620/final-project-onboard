@@ -37,13 +37,12 @@ def token_required(f):
         token = request.headers["Authorization"].split()
         if token[0] != "Bearer":
             return jsonify({"message": "Invalid token"}), 401
-        else:
-            try:
-                data = jwt.decode(token[1], secret_key)
-                username = data['user']
-                user = UserModel.find_by_username(username)
-            except:
-                return jsonify({'message': 'Token is invalid'}), 401
+        try:
+            data = jwt.decode(token[1], secret_key)
+            username = data['user']
+            user = UserModel.find_by_username(username)
+        except:
+            return jsonify({'message': 'Token is invalid'}), 401
         return f(*arg, **kwargs, user_id=user.id)
 
     return decorator
