@@ -21,7 +21,7 @@ def get_categories():
     return jsonify(CategorySchema(many=True).dump(list_categories)), 200
 
 
-@categories_blueprint.route("/categories", methods=['POST'])
+@categories_blueprint.route("/categories", methods=["POST"])
 @validate_input(CategorySchema)
 def create_category(data):
     """
@@ -33,7 +33,8 @@ def create_category(data):
     name = data["name"]
     description = data["description"]
 
-    if not db.session.query(CategoryModel).filter(CategoryModel.name == name).first():
+    category = db.session.query(CategoryModel).filter(CategoryModel.name == name).first()
+    if category:
         return jsonify({"message": "Existed category"}), 400
 
     new_category = CategoryModel(name, description)
