@@ -1,6 +1,4 @@
 import os
-import random
-from string import digits, ascii_letters
 
 import jwt
 from flask import Blueprint, jsonify
@@ -8,20 +6,11 @@ from flask import Blueprint, jsonify
 from app import db
 from app.models.users import UserModel
 from app.schemas.users import UserSchema
-from app.helpers import hash_password, validate_input
+from app.helpers import hash_password, validate_input, create_salt
 
 users_blueprint = Blueprint('users', __name__)
 
 secret_key = str(os.getenv('SECRET_KEY'))
-
-
-def create_salt():
-    """
-    Create a random salt with 16 characters long
-    """
-    characters = digits + ascii_letters
-    chars = random.choices(characters, k=16)
-    return "".join(chars)
 
 
 @users_blueprint.route('/users', methods=['POST'])
@@ -42,7 +31,7 @@ def create_user(data):
     password = data['password']
 
     user = db.session.query(UserModel).filter(UserModel.username == username).first()
-    if not user:
+    if user:
         return jsonify({'message': 'existed username'}), 400
 
     salt = create_salt()
