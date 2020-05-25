@@ -22,14 +22,8 @@ class CategoryModel(db.Model):
     def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()
 
-    # add object to database
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
-
 
 # Marshmallow
 class CategorySchema(Schema):
     name = fields.Str()
     description = fields.Str()
-

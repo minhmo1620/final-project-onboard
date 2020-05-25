@@ -102,7 +102,9 @@ def delete_item(item_id, user_id, **__):
         return jsonify({"message": "Unauthorized"}), 401
 
     # authorized
-    item.delete_from_db()
+    db.session.delete(item)
+    db.session.commit()
+
     return jsonify({"message": "deleted!"}), 200
 
 

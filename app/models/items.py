@@ -18,16 +18,6 @@ class ItemModel(db.Model):
         self.category_id = category_id
         self.user_id = user_id
 
-    # add a new object to database
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
-
-    # delete object from database
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()
-
 
 # Marshmallow
 class ItemSchema(Schema):
