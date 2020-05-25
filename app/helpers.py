@@ -1,6 +1,8 @@
 import os
 import hashlib
+import random
 from functools import wraps
+from string import digits, ascii_letters
 
 import jwt
 from flask import jsonify, request
@@ -10,7 +12,7 @@ from app.models.users import UserModel
 from .db import db
 
 # take secret key from .env
-secret_key = str(os.getenv('SECRET_KEY'))
+secret_key = 'e9cac0f3f4Yd47a3be91d7b8f5'
 
 
 def hash_password(user_password):
@@ -35,7 +37,7 @@ def token_required(f):
                 return jsonify({'message': 'Unauthenticated'}), 401
 
         except:
-            return jsonify({'message': 'Token is invalid'}), 403
+            return jsonify({'message': 'Invalid token'}), 400
         return f(*arg, **kwargs, user_id=user.id)
 
     return wrapper
@@ -48,9 +50,6 @@ def validate_input(schema):
             # take the input
             data = request.get_json()
 
-            for key, value in data.items():
-                data[key] = value.strip()
-
             # check the validity of the input
             try:
                 schema().load(data)
@@ -60,3 +59,11 @@ def validate_input(schema):
         return wrapper
     return decorator
 
+
+def create_salt():
+    """
+    Create a random salt with 16 characters long
+    """
+    characters = digits + ascii_letters
+    chars = random.choices(characters, k=16)
+    return "".join(chars)
