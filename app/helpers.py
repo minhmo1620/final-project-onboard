@@ -35,7 +35,7 @@ def token_required(f):
                 return jsonify({'message': 'Unauthenticated'}), 401
 
         except:
-            return jsonify({'message': 'Token is invalid'}), 40
+            return jsonify({'message': 'Token is invalid'}), 403
         return f(*arg, **kwargs, user_id=user.id)
 
     return wrapper
@@ -47,6 +47,9 @@ def validate_input(schema):
         def wrapper(*args, **kwargs):
             # take the input
             data = request.get_json()
+
+            for key, value in data.items():
+                data[key] = value.strip()
 
             # check the validity of the input
             try:
