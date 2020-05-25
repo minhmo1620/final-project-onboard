@@ -1,10 +1,14 @@
+from flask import json
+
+
 def test_get_categories(client):
     """
     Test: Get all categories in the catalog
     "/categories"
     """
-    rv = client.get('/categories')
-    assert rv.status_code == 200
+    response = client.get('/categories')
+    assert response.status_code == 200
+    assert [] == json.loads(response.data)
 
 
 def test_create_category(client):
@@ -15,18 +19,21 @@ def test_create_category(client):
 
     # create a new category
     data = {"name": "mia", "description": "abc"}
-    rv = client.post('/categories', json=data)
-    assert rv.status_code == 201
+    response = client.post('/categories', json=data)
+    assert response.status_code == 201
 
     # existing category
-    rsp = client.post('/categories', json=data)
-    assert rsp.status_code == 400
+    response = client.post('/categories', json=data)
+    assert response.status_code == 400
+    assert {"message": "Existed category"} == json.loads(response.data)
 
     # invalid input
     data = {"name": 123, "description": "abc"}
-    rv = client.post('/categories', json=data)
-    assert rv.status_code == 422
+    response = client.post('/categories', json=data)
+    assert response.status_code == 400
+    assert {"name": ["Not a valid string."]} == json.loads(response.data)
 
     data = {"name": "mia", "description": 123}
-    rv = client.post('/categories', json=data)
-    assert rv.status_code == 422
+    response = client.post('/categories', json=data)
+    assert response.status_code == 400
+    assert {"description": ["Not a valid string."]} == json.loads(response.data)
