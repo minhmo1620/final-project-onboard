@@ -7,15 +7,15 @@ from .models.users import UserModel
 from .models.items import ItemModel
 from .models.categories import CategoryModel
 
+ENV_TO_CONFIG = {'test': 'app.configs.test.TestingConfig',
+                 'development': 'app.configs.development.DevelopmentConfig',
+                 'local': 'app.configs.local.LocalConfig',
+                 'production': 'app.configs.production.ProductionConfig'}
+
 
 def create_app(env):
-    env_list = {'test': 'app.configs.staging.TestingConfig',
-                'development': 'app.configs.development.DevelopmentConfig',
-                'local': 'app.configs.local.LocalConfig',
-                'production': 'app.configs.production.ProductionConfig'}
-
     app = Flask(__name__)
-    app.config.from_object(env_list[env])
+    app.config.from_object(ENV_TO_CONFIG[env])
     db.init_app(app)
 
     @app.errorhandler(Exception)
@@ -41,4 +41,4 @@ def create_app(env):
 
 env = os.environ.get('ENV', 'development')
 app = create_app(env)
-app.app_context().push()
+# app.app_context().push()
