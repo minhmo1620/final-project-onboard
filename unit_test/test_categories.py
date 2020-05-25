@@ -1,4 +1,5 @@
 from flask import json
+from .helpers import create_category
 
 
 def test_get_categories(client):
@@ -9,6 +10,15 @@ def test_get_categories(client):
     response = client.get('/categories')
     assert response.status_code == 200
     assert [] == json.loads(response.data)
+
+    create_category(name="category", description="description")
+    response = client.get('/categories')
+    assert response.status_code == 200
+    expected_result = {
+        "name": "category",
+        "description": "description"
+    }
+    assert [expected_result] == json.loads(response.data)
 
 
 def test_create_category_success(client):
