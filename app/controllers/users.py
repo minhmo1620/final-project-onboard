@@ -10,7 +10,7 @@ from app.helpers import hash_password, validate_input, create_salt
 
 users_blueprint = Blueprint('users', __name__)
 
-secret_key = str(os.getenv('SECRET_KEY'))
+secret_key = os.getenv('SECRET_KEY')
 
 
 @users_blueprint.route('/users', methods=['POST'])
@@ -27,23 +27,23 @@ def create_user(data):
             - hash password
             --> create new user (username, hashed password, salt)
     """
-    username = data['username']
-    password = data['password']
+    username = data["username"]
+    password = data["password"]
 
     user = db.session.query(UserModel).filter(UserModel.username == username).first()
     if user:
-        return jsonify({'message': 'existed username'}), 400
+        return jsonify({"message": "existed username"}), 400
 
     salt = create_salt()
     hashed_password = hash_password(password + salt)
 
-    token = jwt.encode({'user': username}, secret_key).decode('UTF-8')
+    token = jwt.encode({"user": username}, secret_key).decode("UTF-8")
 
     new_user = UserModel(username, hashed_password, salt)
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'access_token': token}), 201
+    return jsonify({"access_token": token}), 201
 
 
 @users_blueprint.route('/auth', methods=['POST'])
