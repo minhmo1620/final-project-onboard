@@ -1,14 +1,13 @@
-import os
-
 import jwt
 
+from app import app
 from app.models.users import UserModel
 from app.models.categories import CategoryModel
 from app.models.items import ItemModel
 from app.helpers import hash_password, create_salt
 from app.db import db
 
-secret_key = 'e9cac0f3f4Yd47a3be91d7b8f5'
+secret_key = app.config["SECRET_KEY"]
 
 
 def create_dummy_user(username, password):
@@ -85,4 +84,3 @@ def create_item(name, description):
                          category_id=category_id)
     db.session.add(new_item)
     db.session.commit()
-
