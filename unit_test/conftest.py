@@ -3,7 +3,7 @@ import pytest
 from app import create_app, db
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='function')
 def client():
     app = create_app('test')
     client = app.test_client()
