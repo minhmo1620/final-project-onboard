@@ -1,50 +1,43 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify
 
 from app import db
-from app.models.categories import CategoryModel, CategorySchema
+from app.models.categories import CategoryModel
+from app.schemas.categories import CategorySchema
 from app.helpers import validate_input
 
 # create blueprint for categories
-categories_blueprint = Blueprint('categories', __name__)
+categories_blueprint = Blueprint("categories", __name__)
 
 
-@categories_blueprint.route('/categories', methods=['GET'])
+@categories_blueprint.route("/categories", methods=["GET"])
 def get_categories():
     """
     input:
     output: return all categories in the catalog
     """
-    # query
+
     list_categories = db.session.query(CategoryModel).all()
 
-    res = CategorySchema(many=True).dump(list_categories)
-
-    return jsonify({"categories": res}), 200
+    return jsonify(CategorySchema(many=True).dump(list_categories)), 200
 
 
-@categories_blueprint.route('/categories', methods=['POST'])
-@validate_input("category")
-def create_category():
+@categories_blueprint.route("/categories", methods=['POST'])
+@validate_input(CategorySchema)
+def create_category(data):
     """
     input: request new category (category name, description)
     output:
         - add the category successfully (if not existed) --> 200
         - raise error for existed category
     """
-    # take the input
-    data = request.get_json()
+    name = data["name"]
+    description = data["description"]
 
-    # information - name & description
-    category_name = data['name']
-    category_description = data['description']
+    if not db.session.query(CategoryModel).filter(CategoryModel.name == name).first():
+        return jsonify({"message": "Existed category"}), 400
 
-    # check the existent of item
-    if CategoryModel.find_by_name(category_name):
-        return jsonify({'message': 'existed category'}), 400
-
-    # create a new category and add to database
-    new_category = CategoryModel(category_name, category_description)
+    new_category = CategoryModel(name, description)
     db.session.add(new_category)
     db.session.commit()
 
-    return jsonify({'message': "Created item successfully"}), 201
+    return jsonify({'message': "Created category successfully"}), 201
