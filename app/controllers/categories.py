@@ -41,4 +41,4 @@ def create_category(data):
     db.session.add(new_category)
     db.session.commit()
 
-    return jsonify({'message': "Created category successfully"}), 201
+    return jsonify({"message": "Created category successfully"}), 201
