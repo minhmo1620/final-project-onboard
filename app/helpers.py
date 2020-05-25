@@ -11,12 +11,11 @@ from marshmallow import ValidationError
 from app.models.users import UserModel
 from .db import db
 
-# take secret key from .env
-secret_key = 'e9cac0f3f4Yd47a3be91d7b8f5'
+secret_key = os.getenv("SECRET_KEY")
 
 
 def hash_password(user_password):
-    return hashlib.sha256(user_password.encode('utf-8')).hexdigest()
+    return hashlib.sha256(user_password.encode("utf-8")).hexdigest()
 
 
 def token_required(f):
@@ -31,10 +30,10 @@ def token_required(f):
             return jsonify({"message": "Invalid token"}), 403
         try:
             data = jwt.decode(token[1], secret_key)
-            username = data['user']
+            username = data["user"]
             user = db.session.query(UserModel).filter_by(username=username).first()
             if user is None:
-                return jsonify({'message': 'Unauthenticated'}), 401
+                return jsonify({"message": "Unauthenticated"}), 401
 
         except:
             return jsonify({'message': 'Invalid token'}), 400
