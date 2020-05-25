@@ -1,6 +1,6 @@
 def test_create_user(client):
     """
-    Test: Create a new user
+    Test: Create a new user, "/users"
     """
 
     # invalid input
@@ -21,7 +21,7 @@ def test_create_user(client):
 
 def test_auth(client):
     """
-    Test: Authorization
+    Test: Authorization, "/auth"
     """
 
     # valid user

@@ -68,6 +68,7 @@ def headers(client, username, password):
 def test_create_item(client):
     """
     A test for creating a new item
+    post('/categories/1/items')
     """
     # create header
     header = headers(client, "mia", "abc")
@@ -91,6 +92,7 @@ def test_create_item(client):
 def test_get_items(client):
     """
     Test: Get all items of one category
+    GET ('/categories/1/items')
     """
 
     # create a get request to take all items from category 1
@@ -115,6 +117,7 @@ def test_get_item(client):
 def test_edit_item(client):
     """
     Test: Edit a specific item
+    put ('/categories/1/items')
     """
     # create a new header
     header1 = headers(client, "mia", "abc")
@@ -143,6 +146,7 @@ def test_edit_item(client):
 def test_delete_item(client):
     """
     Test: Delete one specific item
+    delete ('/categories/1/items/1')
     """
     # create headers for request (wrong password) -> Unauthorized
     header1 = headers(client, "mia", "abcd")

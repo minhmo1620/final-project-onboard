@@ -1,6 +1,7 @@
 def test_get_categories(client):
     """
     Test: Get all categories in the catalog
+    "/categories"
     """
     rv = client.get('/categories')
     assert rv.status_code == 200
@@ -9,6 +10,7 @@ def test_get_categories(client):
 def test_create_category(client):
     """
     Test: Create a new category
+    POST "/categories"
     """
 
     # create a new category
