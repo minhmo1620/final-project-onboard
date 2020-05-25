@@ -1,9 +1,9 @@
 import os
 import hashlib
-import jwt
-
-from flask import jsonify, request
 from functools import wraps
+
+import jwt
+from flask import jsonify, request
 from marshmallow import ValidationError
 
 from app.models.users import UserModel, UserSchema
