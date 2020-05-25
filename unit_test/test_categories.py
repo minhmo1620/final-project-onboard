@@ -11,7 +11,7 @@ def test_get_categories(client):
     assert [] == json.loads(response.data)
 
 
-def test_create_category(client):
+def test_create_category_success(client):
     """
     Test: Create a new category
     POST "/categories"
@@ -21,8 +21,12 @@ def test_create_category(client):
     data = {"name": "mia", "description": "abc"}
     response = client.post('/categories', json=data)
     assert response.status_code == 201
+    assert {"message": "Created category successfully"} == json.loads(response.data)
 
+
+# def test_create_category_fail(client):
     # existing category
+    data = {"name": "mia", "description": "abc"}
     response = client.post('/categories', json=data)
     assert response.status_code == 400
     assert {"message": "Existed category"} == json.loads(response.data)
@@ -37,3 +41,8 @@ def test_create_category(client):
     response = client.post('/categories', json=data)
     assert response.status_code == 400
     assert {"description": ["Not a valid string."]} == json.loads(response.data)
+
+    data = {"name": "", "description": "abc"}
+    response = client.post('/categories', json=data)
+    assert response.status_code == 400
+    assert {"name": ["Length must be between 1 and 100."]} == json.loads(response.data)
