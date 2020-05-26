@@ -29,7 +29,7 @@ def get_items(category_id):
 
 @items_blueprint.route("/categories/<int:category_id>/items", methods=["POST"])
 @token_required
-@validate_input(schema=ItemModel)
+@validate_input(schema=ItemSchema)
 def create_item(category_id, user_id, data):
     """
     input:
@@ -45,7 +45,6 @@ def create_item(category_id, user_id, data):
     category = db.session.query(CategoryModel).filter(CategoryModel.id == category_id).first()
     if not category:
         return jsonify({"message": "Category not found"}), 404
-
     name = data["name"]
     description = data["description"]
 
@@ -57,7 +56,7 @@ def create_item(category_id, user_id, data):
         return jsonify({"message": "Existed item"}), 400
 
     # create a new item and save to database
-    new_item = ItemModel(name, description, category_id, user_id)
+    new_item = ItemModel(name=name, description=description, category_id=category_id, user_id=user_id)
     db.session.add(new_item)
     db.session.commit()
 
