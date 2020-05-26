@@ -29,7 +29,7 @@ def create_user(data):
 
     user = db.session.query(UserModel).filter(UserModel.username == username).first()
     if user:
-        return jsonify({"message": "existed username"}), 400
+        return jsonify({"message": "Existed username"}), 400
 
     salt = create_salt()
     hashed_password = hash_password(password + salt)
@@ -58,10 +58,10 @@ def auth(data):
     user = db.session.query(UserModel).filter(UserModel.username == username).first()
 
     if not user:
-        return jsonify({"message": "cannot find username"}), 404
+        return jsonify({"message": "Cannot find username"}), 404
 
     if hash_password(password + user.salt) != user.password:
-        return jsonify({"message": "wrong password"}), 401
+        return jsonify({"message": "Wrong password"}), 401
 
     token = encode(user).decode("UTF-8")
     return jsonify({"access_token": token}), 200
