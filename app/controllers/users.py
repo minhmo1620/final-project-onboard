@@ -1,19 +1,16 @@
-import os
-
-import jwt
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, current_app
 
 from app import db
 from app.models.users import UserModel
 from app.schemas.users import UserSchema
-from app.helpers import hash_password, validate_input, create_salt
+from app.helpers import hash_password, validate_input, create_salt, encode
 
-users_blueprint = Blueprint('users', __name__)
+users_blueprint = Blueprint("users", __name__)
 
-secret_key = os.getenv('SECRET_KEY')
+secret_key = current_app.config["SECRET_KEY"]
 
 
-@users_blueprint.route('/users', methods=['POST'])
+@users_blueprint.route("/users", methods=["POST"])
 @validate_input(schema=UserSchema)
 def create_user(data):
     """
@@ -37,16 +34,15 @@ def create_user(data):
     salt = create_salt()
     hashed_password = hash_password(password + salt)
 
-    token = jwt.encode({"user": username}, secret_key).decode("UTF-8")
-
     new_user = UserModel(username, hashed_password, salt)
     db.session.add(new_user)
     db.session.commit()
 
+    token = encode(new_user).decode("UTF-8")
     return jsonify({"access_token": token}), 201
 
 
-@users_blueprint.route('/auth', methods=['POST'])
+@users_blueprint.route("/auth", methods=["POST"])
 @validate_input(schema=UserSchema)
 def auth(data):
     """
@@ -56,17 +52,16 @@ def auth(data):
     output:
         - token
     """
-    username = data['username']
-    password = data['password']
+    username = data["username"]
+    password = data["password"]
 
     user = db.session.query(UserModel).filter(UserModel.username == username).first()
 
     if not user:
-        return jsonify({'message': 'cannot find username'}), 404
+        return jsonify({"message": "cannot find username"}), 404
 
     if hash_password(password + user.salt) != user.password:
-        return jsonify({'message': 'wrong password'}), 401
+        return jsonify({"message": "wrong password"}), 401
 
-    token = jwt.encode({'user': username}, secret_key).decode('UTF-8')
-
-    return jsonify({'access_token': token}), 200
+    token = encode(user).decode("UTF-8")
+    return jsonify({"access_token": token}), 200
