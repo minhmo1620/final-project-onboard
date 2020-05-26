@@ -4,7 +4,7 @@ from app import db
 from app.helpers import validate_input, token_required
 from app.models.items import ItemModel
 from app.models.categories import CategoryModel
-from app.schemas.items import ItemSchema, CreateItem
+from app.schemas.items import ItemSchema, UpdateItem
 
 items_blueprint = Blueprint("items", __name__)
 
@@ -29,7 +29,7 @@ def get_items(category_id):
 
 @items_blueprint.route("/categories/<int:category_id>/items", methods=["POST"])
 @token_required
-@validate_input(schema=CreateItem)
+@validate_input(schema=UpdateItem)
 def create_item(category_id, user_id, data):
     """
     input:
