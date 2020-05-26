@@ -16,12 +16,10 @@ def get_items(category_id):
     output: show all items in that category
         - each item: name of item
     """
-    # check the category based on category_id
     category = db.session.query(CategoryModel).filter(CategoryModel.id == category_id).first()
     if not category:
         return jsonify({"message": "Category not found"}), 404
 
-    # query all items in that category
     list_items = db.session.query(ItemModel).filter(ItemModel.category_id == category_id).all()
 
     return jsonify(ItemSchema(many=True).dump(list_items)), 200
@@ -41,7 +39,6 @@ def create_item(category_id, user_id, data):
         - add new item to the category successfully
         - raise error for existed item
     """
-    # check the category based on category_id
     category = db.session.query(CategoryModel).filter(CategoryModel.id == category_id).first()
     if not category:
         return jsonify({"message": "Category not found"}), 404
@@ -51,11 +48,9 @@ def create_item(category_id, user_id, data):
     item = db.session.query(ItemModel).filter(ItemModel.category_id == category_id)\
         .filter(ItemModel.name == name).first()
 
-    # existing item
     if item:
         return jsonify({"message": "Existed item"}), 400
 
-    # create a new item and save to database
     new_item = ItemModel(name=name, description=description, category_id=category_id, user_id=user_id)
     db.session.add(new_item)
     db.session.commit()
@@ -73,16 +68,13 @@ def get_item(item_id, category_id):
     - item id and description (if found)
     - return error if not
     """
-    # check the category based on category_id
     category = db.session.query(CategoryModel).filter(CategoryModel.id == category_id).first()
     if not category:
         return jsonify({"message": "Category not found"}), 404
 
-    # query based on item id
     item = db.session.query(ItemModel).filter(ItemModel.category_id == category_id) \
         .filter(ItemModel.id == item_id).first()
 
-    # check the validity
     if not item:
         return jsonify({"message": "Item not found"}), 404
     return jsonify(ItemSchema().dump(item)), 200
@@ -95,7 +87,6 @@ def delete_item(item_id, user_id, category_id):
     input: item_id, category_id
     output: delete from item list
     """
-    # check the category of item
     category = db.session.query(CategoryModel).filter(CategoryModel.id == category_id).first()
     if not category:
         return jsonify({"message": "Category not found"}), 404
@@ -103,15 +94,12 @@ def delete_item(item_id, user_id, category_id):
     item = db.session.query(ItemModel).filter(ItemModel.category_id == category_id) \
         .filter(ItemModel.id == item_id).first()
 
-    # if item is in the database
     if not item:
         return jsonify({"message": "Item not found"}), 404
 
-    # unauthorized
     if item.user_id != user_id:
         return jsonify({"message": "Unauthorized"}), 403
 
-    # authorized
     db.session.delete(item)
     db.session.commit()
 
@@ -128,30 +116,22 @@ def edit_item(item_id, user_id, data, category_id):
         - updated description (if existed)
         - raise error if not existed
     """
-    # check the category of item
     category = db.session.query(CategoryModel).filter(CategoryModel.id == category_id).first()
     if not category:
         return jsonify({"message": "Category not found"}), 404
 
-    # information - new description
     description = data["description"]
 
-    # query the target item
     item = db.session.query(ItemModel).filter(ItemModel.category_id == category_id) \
         .filter(ItemModel.id == item_id).first()
 
-    # item not found
     if not item:
         return jsonify({"message": "Item not found"}), 404
 
-    # unauthorized
     if item.user_id != user_id:
         return jsonify({"message": "Unauthorized"}), 403
 
-    # authorized
-    # update
     item.description = description
     db.session.commit()
 
-    # format output
     return jsonify(ItemSchema().dump(item)), 200
