@@ -2,8 +2,6 @@ from marshmallow import Schema, fields, validate, pre_load
 
 
 class UpdateItem(Schema):
-    name = fields.Str(required=True,
-                      validate=validate.Length(max=100, min=1))
     description = fields.Str(required=True,
                              validate=validate.Length(max=200, min=1))
 

@@ -29,7 +29,7 @@ def get_items(category_id):
 
 @items_blueprint.route("/categories/<int:category_id>/items", methods=["POST"])
 @token_required
-@validate_input(schema=UpdateItem)
+@validate_input(schema=ItemModel)
 def create_item(category_id, user_id, data):
     """
     input:
@@ -121,7 +121,7 @@ def delete_item(item_id, user_id, category_id):
 
 @items_blueprint.route("/categories/<int:category_id>/items/<int:item_id>", methods=["PUT"])
 @token_required
-@validate_input(schema=ItemSchema)
+@validate_input(schema=UpdateItem)
 def edit_item(item_id, user_id, data, category_id):
     """
     input: item_id
