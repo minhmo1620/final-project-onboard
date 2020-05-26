@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validate
+from marshmallow import Schema, fields, validate, pre_load
 
 
 class CategorySchema(Schema):
@@ -6,3 +6,8 @@ class CategorySchema(Schema):
                       required=True)
     description = fields.Str(validate=validate.Length(max=100, min=1),
                              required=True)
+
+    @pre_load
+    def strip_data(self, data, **kwargs):
+        data["name"] = data["name"].strip()
+        data["description"] = data["description"].strip()
