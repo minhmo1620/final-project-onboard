@@ -21,7 +21,7 @@ def test_get_categories(client):
     assert [expected_result] == json.loads(response.data)
 
 
-def test_create_category_success(client):
+def test_create_category(client):
     """
     Test: Create a new category
     POST "/categories"
@@ -33,9 +33,7 @@ def test_create_category_success(client):
     assert response.status_code == 201
     assert {"message": "Created category successfully"} == json.loads(response.data)
 
-
-# def test_create_category_fail(client):
-    # existing category
+    # existed category
     data = {"name": "mia", "description": "abc"}
     response = client.post('/categories', json=data)
     assert response.status_code == 400

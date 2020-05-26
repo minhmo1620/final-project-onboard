@@ -54,3 +54,10 @@ def test_auth(client):
     assert response.status_code == 401
     expected_result = {"message": "wrong password"}
     assert expected_result == json.loads(response.data)
+
+    # user not found
+    data = {"username": "abc", "password": "abc"}
+    response = client.post("/auth", json=data)
+    assert response.status_code == 404
+    expected_result = {'message': 'cannot find username'}
+    assert expected_result == json.loads(response.data)

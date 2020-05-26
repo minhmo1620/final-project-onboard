@@ -52,6 +52,11 @@ def test_get_items(client):
     expected_result = [{"name": "item", "description": "description"}]
     assert expected_result == json.loads(response.data)
 
+    response = client.get('categories/2/items', json={})
+    assert response.status_code == 404
+    expected_result = {"message": "Category not found"}
+    assert expected_result == json.loads(response.data)
+
 
 def test_get_item(client):
     """
