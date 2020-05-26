@@ -1,7 +1,6 @@
 import jwt
 from flask import current_app
 
-# from app import app
 from app.models.users import UserModel
 from app.models.categories import CategoryModel
 from app.models.items import ItemModel
@@ -34,10 +33,6 @@ def create_dummy_category(name, description):
     """
     This test is to create a new category in the database to test other functions for item (get, put, post, delete)
     """
-
-    # create data for request
-    data = {"name": name, "description": description}
-
     new_category = CategoryModel(name=name, description=description)
 
     db.session.add(new_category)
