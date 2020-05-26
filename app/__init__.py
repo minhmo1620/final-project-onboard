@@ -7,14 +7,16 @@ from .models.users import UserModel
 from .models.items import ItemModel
 from .models.categories import CategoryModel
 
-ENV_TO_CONFIG = {'test': 'app.configs.test.TestingConfig',
-                 'development': 'app.configs.development.DevelopmentConfig',
-                 'local': 'app.configs.local.LocalConfig',
-                 'production': 'app.configs.production.ProductionConfig'}
+ENV_TO_CONFIG = {"test": "app.configs.test.TestingConfig",
+                 "development": "app.configs.development.DevelopmentConfig",
+                 "local": "app.configs.local.LocalConfig",
+                 "production": "app.configs.production.ProductionConfig"}
 
 
 def create_app(env):
     app = Flask(__name__)
+    if env not in ENV_TO_CONFIG:
+        raise ValueError("Please choose the correct environment: test/development/local/production")
     app.config.from_object(ENV_TO_CONFIG[env])
     db.init_app(app)
 
@@ -39,6 +41,6 @@ def create_app(env):
     return app
 
 
-env = os.environ.get('ENV', 'development')
+env = os.environ.get("ENV", "development")
 app = create_app(env)
 app.app_context().push()
