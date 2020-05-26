@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validate, pre_load
+from marshmallow import Schema, pre_load
 
 
 class Base(Schema):
