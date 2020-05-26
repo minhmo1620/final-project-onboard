@@ -1,27 +1,14 @@
-from marshmallow import Schema, fields, validate, pre_load
+from marshmallow import fields, validate
+from .bases import Base
 
 
-class UpdateItem(Schema):
+class UpdateItem(Base):
     description = fields.Str(required=True,
                              validate=validate.Length(max=200, min=1))
 
-    @pre_load
-    def strip_data(self, data, **kwargs):
-        for key, value in data.items():
-            if type(value) == str:
-                data[key] = value.strip()
-        return data
 
-
-class ItemSchema(Schema):
+class ItemSchema(Base):
     name = fields.Str(required=False,
                       validate=validate.Length(max=100, min=1))
     description = fields.Str(required=True,
                              validate=validate.Length(max=200, min=1))
-
-    @pre_load
-    def strip_data(self, data, **kwargs):
-        for key, value in data.items():
-            if type(value) == str:
-                data[key] = value.strip()
-        return data
