@@ -39,7 +39,7 @@ def token_required(f):
                 return jsonify({"message": "Unauthenticated"}), 401
 
         except:
-            return jsonify({'message': 'Invalid token'}), 400
+            return jsonify({"message": "Invalid token"}), 400
         return f(*arg, **kwargs, user_id=user.id)
 
     return wrapper

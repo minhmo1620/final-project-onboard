@@ -10,7 +10,7 @@ def test_create_user(client):
 
     # invalid input
     data = {"username": 230, "password": "abc"}
-    response = client.post('/users', json=data)
+    response = client.post("/users", json=data)
     assert response.status_code == 400
     expected_result = {"username": ["Not a valid string."]}
     assert expected_result == json.loads(response.data)
@@ -59,5 +59,5 @@ def test_auth(client):
     data = {"username": "abc", "password": "abc"}
     response = client.post("/auth", json=data)
     assert response.status_code == 404
-    expected_result = {'message': 'cannot find username'}
+    expected_result = {"message": "cannot find username"}
     assert expected_result == json.loads(response.data)

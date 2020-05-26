@@ -2,4 +2,4 @@ from .base import Config
 
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:mia@localhost/app'
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:mia@localhost/app"
