@@ -7,5 +7,3 @@ class CategorySchema(Base):
                       required=True)
     description = fields.Str(validate=validate.Length(max=100, min=1),
                              required=True)
-
-
