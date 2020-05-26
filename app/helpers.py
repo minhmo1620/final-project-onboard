@@ -30,7 +30,7 @@ def token_required(f):
     def wrapper(*arg, **kwargs):
         token = request.headers["Authorization"].split()
         if token[0] != "Bearer":
-            return jsonify({"message": "Invalid token"}), 403
+            return jsonify({"message": "Invalid token"}), 400
         try:
             data = jwt.decode(token[1], secret_key)
             username = data["user"]
