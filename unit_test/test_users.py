@@ -25,7 +25,7 @@ def test_create_user(client):
     data = {"username": "mia", "password": "abcd"}
     response = client.post("/users", json=data)
     assert response.status_code == 400
-    expected_result = {"message": "existed username"}
+    expected_result = {"message": "Existed username"}
     assert expected_result == json.loads(response.data)
 
     # existing user
@@ -52,12 +52,12 @@ def test_auth(client):
     data = {"username": "mia", "password": "abcd"}
     response = client.post("/auth", json=data)
     assert response.status_code == 401
-    expected_result = {"message": "wrong password"}
+    expected_result = {"message": "Wrong password"}
     assert expected_result == json.loads(response.data)
 
     # user not found
     data = {"username": "abc", "password": "abc"}
     response = client.post("/auth", json=data)
     assert response.status_code == 404
-    expected_result = {"message": "cannot find username"}
+    expected_result = {"message": "Cannot find username"}
     assert expected_result == json.loads(response.data)
