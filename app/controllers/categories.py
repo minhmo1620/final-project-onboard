@@ -5,7 +5,6 @@ from app.models.categories import CategoryModel
 from app.schemas.categories import CategorySchema
 from app.helpers import validate_input
 
-# create blueprint for categories
 categories_blueprint = Blueprint("categories", __name__)
 
 
