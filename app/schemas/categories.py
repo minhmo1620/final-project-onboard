@@ -9,5 +9,7 @@ class CategorySchema(Schema):
 
     @pre_load
     def strip_data(self, data, **kwargs):
-        data["name"] = data["name"].strip()
-        data["description"] = data["description"].strip()
+        for key, value in data.items():
+            if type(value) == str:
+                data[key] = value.strip()
+        return data

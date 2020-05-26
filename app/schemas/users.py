@@ -9,4 +9,7 @@ class UserSchema(Schema):
 
     @pre_load
     def strip_data(self, data, **kwargs):
-        data["username"] = data["name"].strip()
+        for key, value in data.items():
+            if type(value) == str:
+                data[key] = value.strip()
+        return data
