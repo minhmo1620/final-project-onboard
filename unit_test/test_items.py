@@ -1,4 +1,6 @@
-from unit_test.helpers import create_headers, create_category, create_dummy_user, create_item
+from flask import json
+
+from unit_test.helpers import create_headers, create_dummy_category, create_dummy_user, create_item
 
 
 def test_create_item(client):
@@ -7,24 +9,27 @@ def test_create_item(client):
     post('/categories/1/items')
     """
     # create header
-    token = create_dummy_user(username="mia", password="abc")
-    headers = create_headers(username="mia", password="abc")
-    create_category(name="category", description="description")
+    token1 = create_dummy_user(username="mia", password="abc")
+    headers = create_headers(token1)
+    create_dummy_category(name="category", description="description")
 
     # invalid input
     data1 = {"name": 3, "description": "abc"}
     response = client.post('/categories/1/items', json=data1, headers=headers)
     assert response.status_code == 400
+    assert {"name": ["Not a valid string."]} == json.loads(response.data)
 
     # create a new item
     data2 = {"name": "category", "description": "description"}
     response = client.post('/categories/1/items', json=data2, headers=headers)
     assert response.status_code == 201
+    assert {"message": "Created item successfully"} == json.loads(response.data)
 
     # existing item
     data3 = {"name": "category", "description": "description"}
     response = client.post('/categories/1/items', json=data3, headers=headers)
     assert response.status_code == 400
+    assert {"message": "Existed item"} == json.loads(response.data)
 
 
 def test_get_items(client):
@@ -32,29 +37,41 @@ def test_get_items(client):
     Test: Get all items of one category
     GET ('/categories/1/items')
     """
-    create_category(name="name", description="description")
+    create_dummy_user(username="mia", password="abc")
+    create_dummy_category(name="name", description="description")
 
     # create a get request to take all items from category 1
     # the id of this item is 1
-    rv = client.get('categories/1/items', json={})
-    assert rv.status_code == 200
+    response = client.get('categories/1/items', json={})
+    assert response.status_code == 200
+    assert [] == json.loads(response.data)
+
+    create_item(name="item", description="description")
+    response = client.get('categories/1/items', json={})
+    assert response.status_code == 200
+    expected_result = [{"name": "item", "description": "description"}]
+    assert expected_result == json.loads(response.data)
 
 
 def test_get_item(client):
     """
     Test: Get one specific item
     """
-    create_dummy_user(username="mia", password="abc")
-    create_category(name="name", description="description")
+    token1 = create_dummy_user(username="mia", password="abc")
+    create_dummy_category(name="category", description="description")
     create_item(name="item", description="description")
 
     # create a get request for item 1
-    rv = client.get('categories/1/items/1', json={})
-    assert rv.status_code == 200
+    response = client.get('categories/1/items/1', json={})
+    assert response.status_code == 200
+    expected_result = {"name": "item", "description": "description"}
+    assert expected_result == json.loads(response.data)
 
     # try to get not existing item
-    rv = client.get('categories/1/items/2', json={})
-    assert rv.status_code == 404
+    response = client.get('categories/1/items/2', json={})
+    assert response.status_code == 404
+    expected_result = {"message": "Item not found"}
+    assert expected_result == json.loads(response.data)
 
 
 def test_edit_item(client):
@@ -64,29 +81,37 @@ def test_edit_item(client):
     """
     # create a new header
     token = create_dummy_user(username="mia", password="abc")
-    header1 = create_headers(username="mia", password="abc")
-    create_category(name="category", description="description")
+    header1 = create_headers(token)
+    create_dummy_category(name="category", description="description")
     create_item(name="item", description="description")
 
     # invalid input
     data1 = {"description": 1}
-    rv = client.put('/categories/1/items/1', json=data1, headers=header1)
-    assert rv.status_code == 400
+    response = client.put('/categories/1/items/1', json=data1, headers=header1)
+    assert response.status_code == 400
+    assert {"description": ["Not a valid string."]} == json.loads(response.data)
 
     # update successfully
     data2 = {"description": "new description"}
-    rv = client.put('/categories/1/items/1', json=data2, headers=header1)
-    assert rv.status_code == 200
+    response = client.put('/categories/1/items/1', json=data2, headers=header1)
+    assert response.status_code == 200
+    expected_result = {"description": "new description", "name": "item"}
+    assert expected_result == json.loads(response.data)
 
     # item not found
     data2 = {"description": "new description"}
-    rv = client.put('/categories/1/items/2', json=data2, headers=header1)
-    assert rv.status_code == 404
+    response = client.put('/categories/1/items/2', json=data2, headers=header1)
+    assert response.status_code == 404
+    expected_result = {"message": "Item not found"}
+    assert expected_result == json.loads(response.data)
 
-    # unauthorized account
-    # header2 = create_headers(username="mia", password="abcd")
-    # rv = client.put('/categories/1/items/1', json=data2, headers=header2)
-    # assert rv.status_code == 401
+    # unauthenticated account
+    token2 = create_dummy_user(username="abc", password="mia")
+    header2 = create_headers(token2)
+    response = client.put('/categories/1/items/1', json=data2, headers=header2)
+    assert response.status_code == 403
+    expected_result = {"message": "Unauthorized"}
+    assert expected_result == json.loads(response.data)
 
 
 def test_delete_item(client):
@@ -96,19 +121,26 @@ def test_delete_item(client):
     """
     # create headers for request (wrong password) -> Unauthorized
     token = create_dummy_user(username="mia", password="abc")
-    header1 = create_headers(username="mia", password="abc")
-    create_category(name="category", description="description")
+    header1 = create_headers(token)
+    create_dummy_category(name="category", description="description")
     create_item(name="item", description="description")
 
-    # rv = client.delete('/categories/1/items/1', json={}, headers=header1)
-    # assert rv.status_code == 401
+    token1 = create_dummy_user(username="abc", password="mia")
+    header2 = create_headers(token1)
+    response = client.delete('/categories/1/items/1', json={}, headers=header2)
+    assert response.status_code == 403
+    expected_result = {"message": "Unauthorized"}
+    assert expected_result == json.loads(response.data)
 
     # authorized but item not found
-    # header2 = create_headers(token)
-    rv = client.delete('/categories/1/items/2', json={}, headers=header1)
-    assert rv.status_code == 404
+    response = client.delete('/categories/1/items/2', json={}, headers=header1)
+    assert response.status_code == 404
+    expected_result = {"message": "Item not found"}
+    assert expected_result == json.loads(response.data)
 
     # authorized and delete successfully
-    header3 = create_headers("mia", "abc")
-    rv = client.delete('/categories/1/items/1', json={}, headers=header1)
-    assert rv.status_code == 200
+    header3 = create_headers(token)
+    response = client.delete('/categories/1/items/1', json={}, headers=header1)
+    assert response.status_code == 200
+    expected_result = {"message": "Deleted item successfully"}
+    assert expected_result == json.loads(response.data)
