@@ -1,17 +1,20 @@
-import os
 import hashlib
 import random
 from functools import wraps
 from string import digits, ascii_letters
 
 import jwt
-from flask import jsonify, request
+from flask import jsonify, request, current_app
 from marshmallow import ValidationError
 
 from app.models.users import UserModel
 from .db import db
 
-secret_key = os.getenv("SECRET_KEY")
+secret_key = current_app.config["SECRET_KEY"]
+
+
+def encode(user):
+    return jwt.encode({"user": user.username}, secret_key)
 
 
 def hash_password(user_password):
