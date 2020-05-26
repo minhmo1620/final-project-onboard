@@ -6,10 +6,10 @@ from app.models.items import ItemModel
 from app.models.categories import CategoryModel
 from app.schemas.items import ItemSchema, CreateItem
 
-items_blueprint = Blueprint('items', __name__)
+items_blueprint = Blueprint("items", __name__)
 
 
-@items_blueprint.route('/categories/<int:category_id>/items', methods=['GET'])
+@items_blueprint.route("/categories/<int:category_id>/items", methods=["GET"])
 def get_items(category_id):
     """
     input: category id (int)
@@ -27,7 +27,7 @@ def get_items(category_id):
     return jsonify(ItemSchema(many=True).dump(list_items)), 200
 
 
-@items_blueprint.route('/categories/<int:category_id>/items', methods=['POST'])
+@items_blueprint.route("/categories/<int:category_id>/items", methods=["POST"])
 @token_required
 @validate_input(schema=CreateItem)
 def create_item(category_id, user_id, data):
@@ -54,7 +54,7 @@ def create_item(category_id, user_id, data):
 
     # existing item
     if item:
-        return jsonify({"message": "Item is existed"}), 400
+        return jsonify({"message": "Existed item"}), 400
 
     # create a new item and save to database
     new_item = ItemModel(name, description, category_id, user_id)
@@ -119,7 +119,7 @@ def delete_item(item_id, user_id, category_id):
     return jsonify({"message": "Deleted item successfully"}), 200
 
 
-@items_blueprint.route('/categories/<int:category_id>/items/<int:item_id>', methods=['PUT'])
+@items_blueprint.route("/categories/<int:category_id>/items/<int:item_id>", methods=["PUT"])
 @token_required
 @validate_input(schema=ItemSchema)
 def edit_item(item_id, user_id, data, category_id):
@@ -135,7 +135,7 @@ def edit_item(item_id, user_id, data, category_id):
         return jsonify({"message": "Category not found"}), 404
 
     # information - new description
-    description = data['description']
+    description = data["description"]
 
     # query the target item
     item = db.session.query(ItemModel).filter(ItemModel.category_id == category_id) \
