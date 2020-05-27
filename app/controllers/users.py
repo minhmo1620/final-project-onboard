@@ -57,11 +57,8 @@ def auth(data):
 
     user = db.session.query(UserModel).filter(UserModel.username == username).first()
 
-    if not user:
-        return jsonify({"message": "Cannot find username"}), 404
-
-    if hash_password(password + user.salt) != user.password:
-        return jsonify({"message": "Wrong password"}), 401
+    if not user or hash_password(password + user.salt) != user.password:
+        return jsonify({"message": "Invalid username or password"}), 401
 
     token = encode(user).decode("UTF-8")
     return jsonify({"access_token": token}), 200
