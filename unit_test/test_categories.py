@@ -14,11 +14,11 @@ def test_get_categories(client):
     create_dummy_category(name="category", description="description")
     response = client.get("/categories")
     assert response.status_code == 200
-    expected_result = {
+    expected_result = [{
         "name": "category",
         "description": "description"
-    }
-    assert [expected_result] == json.loads(response.data)
+    }]
+    assert expected_result == json.loads(response.data)
 
 
 def test_create_category(client):
